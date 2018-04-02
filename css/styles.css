@@ -76,14 +76,16 @@ nav {
 
 nav h1 {
   margin: auto;
-  line-height: 2.5rem;
-  font-size: 1rem;
+  line-height: 3rem;
+  font-size: 1.2rem;
+  vertical-align: middle;
 }
 nav h1 a {
   color: #fff;
   font-weight: 200;
   letter-spacing: 3px;
   text-transform: uppercase;
+  display: inline-block;
 }
 
 #breadcrumb {
@@ -190,7 +192,7 @@ nav h1 a {
 #restaurants-list li h1{
   color: #B85C00;
   font-family: Arial,sans-serif;
-  font-size: 14pt;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.3;
@@ -244,7 +246,7 @@ nav h1 a {
 }
 
 .inside > .wo-breadcrumb + #maincontent{
-    margin-top: 2.5rem;
+    margin-top: 3rem;
 }
 
 .inside #map {
@@ -406,6 +408,10 @@ nav h1 a {
 }
 
 @media screen and (min-width: 480px){
+
+  nav h1 {
+    font-size: 1.8rem;
+  }
 
   .filter-options select{
     width: 13rem;
