@@ -34,7 +34,8 @@ a {
 }
 a:hover, a:focus {
 	color: #3397db;
-	text-decoration: none;
+  text-decoration: none;
+  outline: 2px solid rgb(255, 102, 0);
 }
 a img{
 	border: none 0px #fff;
@@ -53,19 +54,27 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #footer {
   background-color: #444;
-  color: #aaa;
-  font-size: 1em;
-  letter-spacing: 1px;
-  padding: 0.5em 25px;
+  color: #c4c4c4;
+  font-size: 0.8rem;
+  letter-spacing: 0.2px;
+  padding: 0.1 rem 0.5rem ;
   text-align: center;
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 0.4rem;
+  height: 4.6rem;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 #footer a{
   display: inline-block;
-  padding: 0.8rem 0;
+  padding: 1.2rem 0;
+  white-space: nowrap;
+}
 
+#footer span{
+  white-space: nowrap;
+  display: block;
 }
 /* ====================== Navigation ====================== */
 nav {
@@ -86,6 +95,7 @@ nav h1 a {
   letter-spacing: 3px;
   text-transform: uppercase;
   display: inline-block;
+  line-height: 2.8rem;
 }
 
 #breadcrumb {
@@ -100,7 +110,7 @@ nav h1 a {
 /* Display list items side by side */
 #breadcrumb li {
     display: inline-block;
-    padding: 12px 8px;
+    padding: 0;
     margin: 0;
 }
 
@@ -119,6 +129,8 @@ nav h1 a {
 #breadcrumb li a {
     color: #026AC5;
     text-decoration: none;
+    padding: 12px 8px;
+    display: inline-block;
 }
 
 /* Add a color on mouse-over */
@@ -157,6 +169,10 @@ nav h1 a {
   padding: 15px 10px;
   max-width: 22rem;
   width: 80%;
+}
+
+.filter-options select:focus{
+  outline: 3px solid rgb(255, 102, 0);
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -220,8 +236,8 @@ nav h1 a {
 }
 
 #restaurants-list li a:focus{
-  outline: 2px solid #207AB6;
-  border-bottom: 3px solid #ccc;
+  outline: 3px solid #252831;
+  border-bottom: 3px solid rgb(255, 102, 0);
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -450,9 +466,17 @@ nav h1 a {
     font-size: 1.1rem;
   }
 
+  #footer{
+    letter-spacing: 1px;
+  }
+
 }
 
 @media screen and (min-width: 540px){
+
+  #restaurants-list{
+    padding-bottom: 4rem;
+  }
 
   #restaurants-list li{
     width: calc(50% - 20px);
@@ -475,6 +499,26 @@ nav h1 a {
 
 #reviews-container {
   padding: 10px 30px 0;
+}
+
+.inside #map-container:last-child{
+  padding-bottom: 3.2rem;
+}
+
+#footer{
+  line-height: 3.2rem;
+  white-space: nowrap;
+  height: 3.2rem;
+  padding: 0;
+}
+
+#footer a{
+  padding: 1rem 0;
+  line-height: 0.9rem;
+}
+
+#footer span{
+  display: inline-block;
 }
 
 }
@@ -565,7 +609,7 @@ nav h1 a {
 
 @media screen and (min-width: 1000px){
 
-  #breadcrumb li {
+  #breadcrumb li a{
     padding:  8px;
 }
 
