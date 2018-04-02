@@ -54,11 +54,18 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #footer {
   background-color: #444;
   color: #aaa;
-  font-size: 8pt;
+  font-size: 1em;
   letter-spacing: 1px;
-  padding: 25px;
+  padding: 0.5em 25px;
   text-align: center;
   text-transform: uppercase;
+  line-height: 1;
+}
+
+#footer a{
+  display: inline-block;
+  padding: 0.8rem 0;
+
 }
 /* ====================== Navigation ====================== */
 nav {
@@ -173,14 +180,14 @@ nav h1 a {
   flex: 0 1 auto;
 }
 
-#restaurants-list .restaurant-img {
+#restaurants-list .restaurant-img{
   background-color: #ccc;
   display: block;
   margin: 0;
   max-width: 100%;
 }
 
-#restaurants-list li h1 {
+#restaurants-list li h1{
   color: #B85C00;
   font-family: Arial,sans-serif;
   font-size: 14pt;
@@ -192,13 +199,13 @@ nav h1 a {
   text-align: center;
 }
 
-#restaurants-list p {
+#restaurants-list p{
   margin: 0;
   padding: 0 10px;
   text-align: left;
 }
 
-#restaurants-list li a {
+#restaurants-list li a{
   background-color: #B85C00;
   border-bottom: 3px solid #eee;
   color: #fff;
@@ -208,6 +215,11 @@ nav h1 a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+#restaurants-list li a:focus{
+  outline: 2px solid #207AB6;
+  border-bottom: 3px solid #ccc;
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -224,7 +236,7 @@ nav h1 a {
 }
 
 .inside #map-container:last-child{
-  padding-bottom: 4rem;
+  padding-bottom: 4.6rem;
 }
 
 .inside  #maincontent{
