@@ -150,8 +150,20 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    const nameArr=restaurant.photograph.match(/([\w\d]*)\.jpg/);
+    let name=nameArr ? nameArr[1] : "";
+    return (`/img/${name}-500_medium.jpg`);
   }
+
+/**
+   * Restaurant image URL.
+   */
+  static imageUrls(restaurant) {
+    const nameArr=restaurant.photograph.match(/([\w\d]*)\.jpg/);
+    let name=nameArr ? nameArr[1] : "";
+    return (`/img/${name}-320_small.jpg 320w, /img/${name}-400_small.jpg 400w, /img/${name}-500_medium.jpg 500w, /img/${name}-600_medium.jpg 600w, /img/${name}-800_large.jpg 800w`);
+  }
+
 
   /**
    * Map marker for a restaurant.
