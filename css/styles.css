@@ -35,8 +35,13 @@ a {
 a:hover, a:focus {
 	color: #3397db;
   text-decoration: none;
+
+}
+
+a:focus{
   outline: 2px solid rgb(255, 102, 0);
 }
+
 a img{
 	border: none 0px #fff;
 }
@@ -172,7 +177,7 @@ nav h1 a {
 }
 
 .filter-options select:focus{
-  outline: 3px solid rgb(255, 102, 0);
+  outline: 2px solid rgb(255, 102, 0);
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -235,9 +240,15 @@ nav h1 a {
   text-transform: uppercase;
 }
 
+#restaurants-list li a:hover{
+  color: #000;
+  border-bottom: 3px solid rgb(255, 144, 69);
+}
+
+
 #restaurants-list li a:focus{
-  outline: 3px solid #252831;
-  border-bottom: 3px solid rgb(255, 102, 0);
+  outline: 2px solid #252831;
+  border-bottom: 3px solid rgb(255, 144, 69);
 }
 
 /* ====================== Restaurant Details ====================== */

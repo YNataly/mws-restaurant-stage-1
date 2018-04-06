@@ -1,4 +1,4 @@
-const cacheName = "restaurant-rev-cache-v1";
+const cacheName = "restaurant-rev-cache-v2";
 const imgsCache = "restaurant-rev-imgs-v2";
 
 const currentChaches = [cacheName, imgsCache];
