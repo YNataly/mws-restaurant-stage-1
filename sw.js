@@ -1,5 +1,5 @@
 const cacheName = "restaurant-rev-cache-v2";
-const imgsCache = "restaurant-rev-imgs-v1";
+const imgsCache = "restaurant-rev-imgs-v2";
 
 const currentChaches = [cacheName, imgsCache];
 
@@ -85,9 +85,21 @@ self.addEventListener("fetch", function (event) {
     return caches.open(imgsCache).then(function (cache) {
       return cache.match(storageURL).then(function (response) {
         return response && greaterEq(response.url, imgSize) && response || fetch(request).then(function (nwResponse) {
-          cache.put(storageURL, nwResponse.clone());
-          return nwResponse;
+          if(nwResponse.ok){
+            cache.put(storageURL, nwResponse.clone());
+            return nwResponse;
+          }
+
+          return response || nwResponse;
+
+        }).catch(function(err){
+          /* If we have smaller image in cache - serve it */
+            return response || new Response("Unavailable", {
+              "status": 503,
+              "statusText": "Service Unavailable"
+            });
         });
+
       });
     });
   }
