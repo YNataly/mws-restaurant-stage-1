@@ -1,5 +1,20 @@
-let restaurant;
+var restaurant, marker;
 var map;
+
+/* Fetch restaurant info when page loaded */
+document.addEventListener("DOMContentLoaded", event => {
+  fetchRestaurantFromURL((error, restaurant) => {
+    if (error) { // Got an error!
+      console.error(error);
+      return;
+    }
+
+    if(self.map){
+      self.marker=DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+    }
+
+  });
+});
 
 /**
  * Initialize Google map, called from HTML.
@@ -9,13 +24,21 @@ window.initMap = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      try{
+
+        self.map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: restaurant.latlng,
+          scrollwheel: false
+        });
+
+        if(self.restaurant && !self.marker) {
+          self.marker=DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);}
+      }
+      catch(err){
+        console.error('Map init error: '+err);
+      }
+
     }
   });
 }
@@ -40,6 +63,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
+      fillBreadcrumb();
       callback(null, restaurant)
     });
   }

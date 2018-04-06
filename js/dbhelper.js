@@ -9,7 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 8000 // Change this to your server port
-    return `http://192.168.0.100:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/data/restaurants.json`;
   }
 
   /**
@@ -169,6 +169,7 @@ class DBHelper {
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
+    try{
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
@@ -177,6 +178,10 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+    }
+    catch(err){
+      console.error('Marker init error: '+err);
+    }
   }
 
 }
