@@ -103,6 +103,10 @@ nav h1 a {
   line-height: 2.8rem;
 }
 
+nav[aria-label="Breadcrumb"]{
+  text-align: left;
+}
+
 #breadcrumb {
     padding: 0;
     list-style: none;
