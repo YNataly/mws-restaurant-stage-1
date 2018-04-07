@@ -214,7 +214,7 @@ nav[aria-label="Breadcrumb"]{
   max-width: 100%;
 }
 
-#restaurants-list li h1{
+#restaurants-list li h3{
   color: #B85C00;
   font-family: Arial,sans-serif;
   font-size: 1rem;
@@ -345,7 +345,7 @@ nav[aria-label="Breadcrumb"]{
   padding-bottom: 0;
 }
 
-#reviews-container h2 {
+#reviews-container h3 {
   color: #AD5700;
   font-size: 1.6rem;
   font-weight: 300;
@@ -417,7 +417,7 @@ nav[aria-label="Breadcrumb"]{
 }
 
 #restaurant-hours td {
-  color: #666;
+  color: #505050;
 }
 
 /* Responsive */
@@ -557,7 +557,7 @@ nav[aria-label="Breadcrumb"]{
     width: calc(33.3% - 30px);
   }
 
-  #restaurants-list li h1 {
+  #restaurants-list li h3 {
     font-weight: 200;
   }
 
