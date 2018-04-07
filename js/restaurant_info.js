@@ -57,6 +57,15 @@ fetchRestaurantFromURL = (callback) => {
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+      /*This callback is called async from DBHelper XHR onload handler.
+        It may be called concurrently from DOMContentLoaded and initMap handlers.
+        Make sure it called only one time by checking self.restaurant */
+
+      if (self.restaurant) { // restaurant already filled!
+        callback(null, self.restaurant)
+        return;
+      }
+      
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);

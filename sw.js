@@ -1,4 +1,4 @@
-const cacheName = "restaurant-rev-cache-v1";
+const cacheName = "restaurant-rev-cache-v2";
 const imgsCache = "restaurant-rev-imgs-v2";
 
 const currentChaches = [cacheName, imgsCache];
@@ -12,7 +12,6 @@ self.addEventListener("install", function (event) {
         'js/dbhelper.js',
         'js/main.js',
         'js/restaurant_info.js',
-        'js/sw_controller.js',
         'index.html',
         'restaurant.html'
       ]).then(function(){
