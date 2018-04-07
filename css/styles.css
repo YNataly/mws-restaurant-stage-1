@@ -21,17 +21,19 @@ body,td,th,p{
 body {
 	background-color: #fdfdfd;
 	margin: 0 auto;
-  max-width: 1200px;
 }
+
 ul, li {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1rem;
 	color: #333;
 }
+
 a {
 	color: orange;
 	text-decoration: none;
 }
+
 a:hover, a:focus {
 	color: #3397db;
   text-decoration: none;
@@ -211,7 +213,7 @@ nav[aria-label="Breadcrumb"]{
   background-color: #ccc;
   display: block;
   margin: 0;
-  max-width: 100%;
+  width: 100%;
 }
 
 #restaurants-list li h3{
@@ -261,7 +263,6 @@ nav[aria-label="Breadcrumb"]{
   top: 0;
   width: 100%;
   z-index: 1000;
-  max-width: 1200px;
 }
 
 .inside #map-container {
@@ -551,23 +552,32 @@ nav[aria-label="Breadcrumb"]{
 
 }
 
-@media screen and (min-width: 820px){
+@media screen and (min-width: 800px){
 
   #restaurants-list li{
-    width: calc(33.3% - 30px);
+    width: 15.2rem;
+    max-width: 22.82rem;
+    flex: 1 1 auto;
+    margin: 15px 10px;
   }
 
   #restaurants-list li h3 {
     font-weight: 200;
   }
 
-  #restaurant-container, #reviews-container{
+  #restaurant-container{
     width: 100%;
+    max-width: 75rem;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: flex-start;
     align-content: flex-start;
+  }
+
+  #reviews-container{
+    width: 100%;
+    padding: 10px;
   }
 
   #restaurant-name{
@@ -602,22 +612,19 @@ nav[aria-label="Breadcrumb"]{
   #reviews-list{
     display: flex;
     flex-flow: row wrap;
-  }
+    justify-content: space-around;
+    align-content: flex-start;
+    align-items: flex-start;
 
-  #reviews-list li:nth-child(odd){
-    width: calc(50% - 20px);
-    margin-right: 20px;
-    justify-content: space-between;
-  }
-
-  #reviews-list li:nth-child(even){
-    width: calc(50% - 20px);
-    margin-left: 20px;
-    justify-content: space-between;
   }
 
   #reviews-list li{
+    width: 23.125rem;
+    max-width: 32rem;
     font-size: 1rem;
+    justify-content: space-between;
+    margin: 0 10px;
+    flex: 1 1 auto;
   }
 
 }
@@ -626,7 +633,11 @@ nav[aria-label="Breadcrumb"]{
 
   #breadcrumb li a{
     padding:  8px;
-}
+  }
+
+  #restaurants-list li{
+    width: 18rem;
+  }
 
   #restaurant-hours{
     width: calc(40% - 40px);
@@ -639,6 +650,42 @@ nav[aria-label="Breadcrumb"]{
 
   #restaurant-cuisine{
     width: 60%;
+  }
+
+  #reviews-container h3{
+    padding-left: 2rem;
+  }
+
+  #reviews-list li{
+    margin: 0 20px;
+  }
+
+}
+
+@media screen and (min-width: 1800px){
+
+  #restaurants-list li{
+    width: 20rem;
+    max-width: 23.5rem;
+    margin: 20px;
+  }
+
+  #reviews-list{
+    justify-content: flex-start;
+  }
+
+  #reviews-list li{
+    width: 25.125rem;
+    max-width: 34rem;
+    margin: 15px 40px;
+  }
+
+  #reviews-list header{
+    padding: 1rem 2rem 1rem;
+  }
+
+  #reviews-list .content{
+    padding: 1rem 2rem 2rem;
   }
 
 }
