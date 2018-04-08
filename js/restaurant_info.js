@@ -65,7 +65,7 @@ fetchRestaurantFromURL = (callback) => {
         callback(null, self.restaurant)
         return;
       }
-      
+
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -92,7 +92,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.srcset= DBHelper.imageUrls(restaurant);
-  image.sizes="(min-width: 1000px) 60vw,  (min-width: 820px) 55vw, (min-width: 590px) 80vw,  100vw";
+  image.sizes="(min-width: 1400px) 800px, (min-width: 1000px) 60vw,  (min-width: 820px) 55vw, (min-width: 590px) 80vw,  100vw";
   image.alt=`Restaurant ${restaurant.name}`;
 
   const cuisine = document.getElementById('restaurant-cuisine');

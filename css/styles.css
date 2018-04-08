@@ -267,6 +267,7 @@ nav[aria-label="Breadcrumb"]{
 
 .inside #map-container {
   background: blue none repeat scroll 0 0;
+  width: 100%;
 }
 
 .inside #map-container:last-child{
@@ -635,6 +636,11 @@ nav[aria-label="Breadcrumb"]{
     padding:  8px;
   }
 
+  #restaurants-list{
+    justify-content: flex-start;
+  }
+
+
   #restaurants-list li{
     width: 18rem;
   }
@@ -662,6 +668,71 @@ nav[aria-label="Breadcrumb"]{
 
 }
 
+@media screen and (min-width: 1400px){
+
+  #maincontent.restaurant-info{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    padding-bottom: 3.2rem;
+  }
+
+  #restaurant-container{
+    width: 55%;
+    max-width: 800px;
+    flex: 0 1 auto;
+    order: 1;
+    border-style: none;
+  }
+
+  #reviews-container{
+    order: 3;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .inside #map-container:last-child{
+    order: 2;
+    width: 40%;
+    flex: 1 1 auto;
+    padding-bottom: 0;
+    margin: 3.5rem 30px 30px;
+    align-self: stretch;
+  }
+
+  .inside #map-container:last-child #map{
+    min-height: 400px;
+    height: 100%;
+  }
+
+  #restaurant-hours{
+    width: 100%;
+    margin-left: 40px;
+    order: 4;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  #restaurant-img{
+    width: 100%;
+    order: 1;
+  }
+
+  #restaurant-cuisine{
+    width: 100%;
+    order: 2;
+  }
+
+  #restaurant-address{
+    order: 3;
+  }
+
+  #reviews-container{
+    box-shadow: 0 -1px 1px #d9d9d9;
+  }
+
+}
+
 @media screen and (min-width: 1800px){
 
   #restaurants-list li{
@@ -670,8 +741,16 @@ nav[aria-label="Breadcrumb"]{
     margin: 20px;
   }
 
+  #restaurant-container{
+    margin-left: 40px;
+  }
+
   #reviews-list{
     justify-content: flex-start;
+  }
+
+  #reviews-container h3{
+    padding-left: 40px;
   }
 
   #reviews-list li{
@@ -686,6 +765,10 @@ nav[aria-label="Breadcrumb"]{
 
   #reviews-list .content{
     padding: 1rem 2rem 2rem;
+  }
+
+  .inside #map-container:last-child{
+    margin: 3.5rem 60px 50px;
   }
 
 }

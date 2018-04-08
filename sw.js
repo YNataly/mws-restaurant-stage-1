@@ -1,5 +1,5 @@
-const cacheName = "restaurant-rev-cache-v1";
-const imgsCache = "restaurant-rev-imgs-v2";
+const cacheName = "restaurant-rev-cache-v3";
+const imgsCache = "restaurant-rev-imgs-v3";
 
 const currentChaches = [cacheName, imgsCache];
 
