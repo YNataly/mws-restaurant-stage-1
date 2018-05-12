@@ -1,18 +1,15 @@
-var restaurant, marker;
-var map;
-
+/* globals google, DBHelper */
 /* Fetch restaurant info when page loaded */
-document.addEventListener("DOMContentLoaded", event => {
+document.addEventListener('DOMContentLoaded', event => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
       return;
     }
 
-    if(self.map){
-      self.marker=DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+    if (self.map) {
+      self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
-
   });
 });
 
@@ -24,45 +21,43 @@ window.initMap = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      try{
-
+      try {
         self.map = new google.maps.Map(document.getElementById('map'), {
           zoom: 16,
           center: restaurant.latlng,
           scrollwheel: false
         });
 
-        if(self.restaurant && !self.marker) {
-          self.marker=DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);}
+        if (self.restaurant && !self.marker) {
+          self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+        }
+      } catch(err) {
+        console.error('Map init error: ' + err);
       }
-      catch(err){
-        console.error('Map init error: '+err);
-      }
-
     }
   });
-}
+};
 
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = (callback) => {
+const fetchRestaurantFromURL = (callback) => {
   if (self.restaurant) { // restaurant already fetched!
-    callback(null, self.restaurant)
+    callback(null, self.restaurant);
     return;
   }
   const id = getParameterByName('id');
   if (!id) { // no id found in URL
-    error = 'No restaurant id in URL'
+    const error = 'No restaurant id in URL';
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
-      /*This callback is called async from DBHelper XHR onload handler.
+      /* This callback is called async from DBHelper XHR onload handler.
         It may be called concurrently from DOMContentLoaded and initMap handlers.
         Make sure it called only one time by checking self.restaurant */
 
       if (self.restaurant) { // restaurant already filled!
-        callback(null, self.restaurant)
+        callback(null, self.restaurant);
         return;
       }
 
@@ -73,15 +68,15 @@ fetchRestaurantFromURL = (callback) => {
       }
       fillRestaurantHTML();
       fillBreadcrumb();
-      callback(null, restaurant)
+      callback(null, restaurant);
     });
   }
-}
+};
 
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -89,10 +84,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+  image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.srcset= DBHelper.imageUrls(restaurant);
-  image.sizes="(min-width: 1400px) 800px, (min-width: 1000px) 60vw,  (min-width: 820px) 55vw, (min-width: 590px) 80vw,  100vw";
+  image.sizes='(min-width: 1400px) 800px, (min-width: 1000px) 60vw,  (min-width: 820px) 55vw, (min-width: 590px) 80vw,  100vw';
   image.alt=`Restaurant ${restaurant.name}`;
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -104,12 +99,12 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
-}
+};
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
+const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
@@ -124,12 +119,12 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 
     hours.appendChild(row);
   }
-}
+};
 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -146,66 +141,66 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-}
+};
 
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review) => {
+const createReviewHTML = (review) => {
   const li = document.createElement('li');
   const header = document.createElement('header');
   const name = document.createElement('p');
   name.innerHTML = review.name;
-  name.className="name"
+  name.className='name';
   header.appendChild(name);
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
-  date.className="date";
+  date.className='date';
   header.appendChild(date);
 
   li.appendChild(header);
 
   const content = document.createElement('div');
-  content.className="content";
+  content.className='content';
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
-  rating.className="rating";
+  rating.className='rating';
   content.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
-  comments.className="comments";
+  comments.className='comments';
   content.appendChild(comments);
 
   li.appendChild(content);
 
   return li;
-}
+};
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+const fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
-}
+};
 
 /**
  * Get a parameter by name from page URL.
  */
-getParameterByName = (name, url) => {
+const getParameterByName = (name, url) => {
   if (!url)
     url = window.location.href;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-    results = regex.exec(url);
+  name = name.replace(/[[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
   if (!results)
     return null;
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+};

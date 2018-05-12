@@ -1,14 +1,15 @@
+/* exported DBHelper */
+/* global google */
 /**
  * Common database helper functions.
  */
-class DBHelper {
-
+class DBHelper { // eslint-disable-line no-unused-vars
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
+    const port = 3000; // Change this to your server port
     return `http://localhost:${port}/data/restaurants.json`;
   }
 
@@ -24,7 +25,7 @@ class DBHelper {
         const restaurants = json.restaurants;
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
+        const error = `Request failed. Returned status of ${xhr.status}`;
         callback(error, null);
       }
     };
@@ -41,7 +42,7 @@ class DBHelper {
         callback(error, null);
       } else {
         const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
+        if (self.restaurant) { // Got the restaurant
           callback(null, restaurant);
         } else { // Restaurant does not exist in the database
           callback('Restaurant does not exist', null);
@@ -91,11 +92,11 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        let results = restaurants
-        if (cuisine != 'all') { // filter by cuisine
+        let results = restaurants;
+        if (cuisine !== 'all') { // filter by cuisine
           results = results.filter(r => r.cuisine_type == cuisine);
         }
-        if (neighborhood != 'all') { // filter by neighborhood
+        if (neighborhood !== 'all') { // filter by neighborhood
           results = results.filter(r => r.neighborhood == neighborhood);
         }
         callback(null, results);
@@ -113,9 +114,9 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
-        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
+        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
         // Remove duplicates from neighborhoods
-        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
+        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
         callback(null, uniqueNeighborhoods);
       }
     });
@@ -131,9 +132,9 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all cuisines from all restaurants
-        const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
+        const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
         // Remove duplicates from cuisines
-        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i)
+        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i);
         callback(null, uniqueCuisines);
       }
     });
@@ -150,38 +151,35 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    const nameArr=restaurant.photograph.match(/([\w\d]*)\.jpg/);
-    let name=nameArr ? nameArr[1] : "";
+    const nameArr = restaurant.photograph.match(/([\w\d]*)\.jpg/);
+    let name = nameArr ? nameArr[1] : '';
     return (`/img/${name}-500_medium.jpg`);
   }
 
-/**
+  /**
    * Restaurant image URL.
    */
   static imageUrls(restaurant) {
-    const nameArr=restaurant.photograph.match(/([\w\d]*)\.jpg/);
-    let name=nameArr ? nameArr[1] : "";
+    const nameArr = restaurant.photograph.match(/([\w\d]*)\.jpg/);
+    let name = nameArr ? nameArr[1] : '';
     return (`/img/${name}-320_small.jpg 320w, /img/${name}-400_small.jpg 400w, /img/${name}-500_medium.jpg 500w, /img/${name}-600_medium.jpg 600w, /img/${name}-800_large.jpg 800w`);
   }
-
 
   /**
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
-    try{
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-    }
-    catch(err){
-      console.error('Marker init error: '+err);
+    try {
+      const marker = new google.maps.Marker({
+        position: restaurant.latlng,
+        title: restaurant.name,
+        url: DBHelper.urlForRestaurant(restaurant),
+        map: map,
+        animation: google.maps.Animation.DROP}
+      );
+      return marker;
+    } catch(err) {
+      console.error('Marker init error: ' + err);
     }
   }
-
 }
