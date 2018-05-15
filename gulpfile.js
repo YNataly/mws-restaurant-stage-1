@@ -1,5 +1,5 @@
-/* To clear cache run: gulp cache:clear
-   To clear 'build' directory and build develomment assets run: gulp clean-dev-build
+/* To clear cache run: gulp clean-cache
+   To clean build of develomment assets ('build' directory will be created) run: gulp clean-dev
    To build develomment assets ('build' directory will be created) run: gulp
    To build production assets ('dist' directory will be created) run: gulp prod
 */
@@ -11,85 +11,85 @@ const sourcemaps = require('gulp-sourcemaps');
 const eslint = require('gulp-eslint');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
-const imagemin = require('gulp-imagemin');
 const htmlreplace = require('gulp-html-replace');
 let browserSync = require('browser-sync').create();
-const cache = require('gulp-cache');
+const cached = require('gulp-cached');
 const del = require('del');
 const uglify = require('gulp-uglify');
 const runSequence = require('run-sequence');
 const gulpIf = require('gulp-if');
 const cleanCSS = require('gulp-clean-css');
+const responsive = require('gulp-responsive');
+const fs = require('fs');
 
-const allJS = 'all.js';
-let isProduction=false;
-let baseDir='./build';
+const config={};
+config.allJS = 'all.js';
+config.isProduction=false;
+config.baseDir='./build';
+config.imageCacheName='images';
+config.CACHE_FILE = './.cache.images.json';
 
-gulp.task('default', ['watch']);
+if (fs.existsSync(config.CACHE_FILE)) {
+  console.log('Using images cache file at ' + config.CACHE_FILE);
+  cached.caches = require(config.CACHE_FILE) || {};
+} else {
+  console.log('No images cache file found.');
+}
 
-gulp.task('clean-dev-build', ['clean'], function(cb) {
-  runSequence('default', cb);
+gulp.task('default', ['clean'], function(cb) {
+  runSequence('watch', cb);
 });
 
-gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'images'], function () {
-
+gulp.task('clean-dev', ['clean', 'clean-cache', 'clean-images'], function(cb) {
+  runSequence('watch', cb);
 });
+
+gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images']);
 
 gulp.task('watch', ['create-assets'], function () {
   browserSync.init({
-    server: { baseDir: `${baseDir}` },
+    server: { baseDir: `${config.baseDir}` },
     port: 3000,
     browser: 'chrome.exe'
   }, function(err, bs) {
     console.log(bs.options.get('urls').toJS());
   });
 
-  gulp.watch('./*.html', ['copy-html'], function() { browserSync.reload(); });
-  gulp.watch('./css/*.css', ['styles'], function() { browserSync.reload(); });
-  gulp.watch('./img/*.+(jpg|png|gif|svg)', ['images'], function() { browserSync.reload(); });
-  gulp.watch('./js/**/*.js', ['scripts'], function() { browserSync.reload(); });
+  gulp.watch('./*.html', ['copy-html']);
+  gulp.watch('./css/*.css', ['styles']);
+  gulp.watch('./img-src/*.jpg', ['responsive-images']);
+  gulp.watch('./js/**/*.js', ['scripts']);
+  gulp.watch('./build/**/*', browserSync.reload);
 });
 
 gulp.task('copy-html', function () {
   return gulp.src('*.html')
     .pipe(htmlreplace({
-      'js-file': `js/${allJS}`
+      'js-file': `js/${config.allJS}`
     }))
-    .pipe(gulpIf(isProduction, gulp.dest('./dist'), gulp.dest('./build')));
+    .pipe(gulp.dest(`${config.baseDir}`));
 });
 
 gulp.task('styles', function () {
   return gulp.src('./css/*.css')
     .pipe(sourcemaps.init())
     .pipe(postcss([autoprefixer()]))
-    .pipe(gulpIf(isProduction, cleanCSS()))
+    .pipe(gulpIf(config.isProduction, cleanCSS()))
     .pipe(sourcemaps.write())
-    .pipe(gulpIf(isProduction, gulp.dest('./dist/css'), gulp.dest('./build/css')));
-});
-
-gulp.task('clean:images', function(cb) {
-  if (isProduction) cb();
-  else return del(['./build/img']);
+    .pipe(gulp.dest(`${config.baseDir}/css`));
 });
 
 gulp.task('clean', function() {
-  return del(['./build']);
+  return del(['./build/**', '!./build/img', '!./build']);
 });
 
-gulp.task('images', ['clean:images'], function () {
-  return gulp.src('./img/*.+(jpg|png|gif|svg)')
-    .pipe(cache(imagemin([
-      imagemin.gifsicle({interlaced: true}),
-      imagemin.jpegtran({progressive: true}),
-      imagemin.optipng({optimizationLevel: 5}),
-      imagemin.svgo({
-        plugins: [
-          {removeViewBox: true},
-          {cleanupIDs: false}
-        ]
-      })
-    ])))
-    .pipe(gulpIf(isProduction, gulp.dest('./dist/img'), gulp.dest('./build/img')));
+gulp.task('clean-cache', function (cb) {
+  _clearCache();
+  cb();
+});
+
+gulp.task('clean-images', function() {
+  return del(`${config.baseDir}/img`);
 });
 
 gulp.task('eslint', function () {
@@ -103,14 +103,10 @@ gulp.task('scripts', ['eslint'], function () {
   return gulp.src('./js/*.js')
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(concat(`${allJS}`))
-    .pipe(gulpIf(isProduction, uglify()))
+    .pipe(concat(`${config.allJS}`))
+    .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write())
-    .pipe(gulpIf(isProduction, gulp.dest('./dist/js'), gulp.dest('./build/js')));
-});
-
-gulp.task('cache:clear', function (callback) {
-  return cache.clearAll(callback);
+    .pipe(gulp.dest(`${config.baseDir}/js`));
 });
 
 /* Build production assets */
@@ -121,7 +117,7 @@ gulp.task('clean-dist', function() {
 
 gulp.task('initBrowserSync', function() {
   browserSync.init({
-    server: { baseDir: `${baseDir}` },
+    server: { baseDir: `${config.baseDir}` },
     port: 3000,
     browser: 'chrome.exe'
   }, function(err, bs) {
@@ -130,8 +126,58 @@ gulp.task('initBrowserSync', function() {
 });
 
 gulp.task('prod', ['clean-dist'], function(cb) {
-  isProduction=true;
-  baseDir='./dist';
+  config.isProduction=true;
+  config.baseDir='./dist';
 
   runSequence('create-assets', 'initBrowserSync', cb);
 });
+
+/* Create responsive images */
+gulp.task('responsive-images', function() {
+  const imgStream = gulp.src('./img-src/*.jpg')
+    .pipe(gulpIf(!config.isProduction, cached(config.imageCacheName)))
+    .pipe(responsive({
+      '*': [{
+        width: 800,
+        rename: { suffix: '-800_large' }
+      }, {
+        width: 600,
+        rename: { suffix: '-600_medium' }
+      }, {
+        width: 500,
+        rename: { suffix: '-500_medium' }
+      }, {
+        width: 400,
+        rename: { suffix: '-400_small' }
+      }, {
+        width: 320,
+        rename: { suffix: '-320_small' }
+      }]
+    }, {
+      quality: 80,
+      progressive: true,
+      withMetadata: false,
+      skipOnEnlargement: true,
+      errorOnUnusedConfig: false,
+      errorOnUnusedImage: false,
+      errorOnEnlargement: false
+    }
+    ))
+    .pipe(gulp.dest(`${config.baseDir}/img`));
+
+  imgStream.on('end', function () {
+    _saveCache();
+  });
+
+  return imgStream;
+});
+
+function _saveCache() {
+  var json = JSON.stringify(cached.caches, null, '  ');
+  fs.writeFileSync(config.CACHE_FILE, json);
+}
+
+function _clearCache() {
+  fs.writeFileSync(config.CACHE_FILE, '{}');
+  cached.caches={};
+}
