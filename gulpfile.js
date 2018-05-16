@@ -46,7 +46,7 @@ gulp.task('clean-dev', ['clean', 'clean-cache', 'clean-images'], function(cb) {
   runSequence('watch', cb);
 });
 
-gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images']);
+gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images', 'sw-script']);
 
 gulp.task('watch', ['create-assets'], function () {
   browserSync.init({
@@ -109,6 +109,15 @@ gulp.task('scripts', ['eslint'], function () {
     .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(`${config.baseDir}/js`));
+});
+
+gulp.task('sw-script', ['eslint'], function () {
+  return gulp.src('./sw.js')
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulpIf(config.isProduction, uglify()))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(`${config.baseDir}`));
 });
 
 /* Build production assets */
