@@ -1,7 +1,9 @@
 /* To clear cache run: gulp clean-cache
-   To clean build of develomment assets ('build' directory will be created) run: gulp clean-dev
+   To clean 'img' directory, images cache and build develomment assets ('build' directory will be created) run: gulp clean-dev
    To build develomment assets ('build' directory will be created) run: gulp
    To build production assets ('dist' directory will be created) run: gulp prod
+
+   Cache is used only for images
 */
 
 const gulp = require('gulp');
@@ -80,7 +82,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('clean', function() {
-  return del(['./build/**', '!./build/img', '!./build']);
+  return del(['./build/**', '!./build{,/img,/img/**}']);
 });
 
 gulp.task('clean-cache', function (cb) {
