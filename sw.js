@@ -19,7 +19,7 @@ self.addEventListener('install', function (event) {
         let req = 'https://normalize-css.googlecode.com/svn/trunk/normalize.css';
         return fetch(req, { 'mode': 'no-cors' }).then(function (response) {
           cache.put(req, response);
-        }).catch(err => { console.error(err); });
+        }).catch(err => { console.error(`from sw: ${err}`); });
       });
     })
   );
@@ -76,7 +76,7 @@ self.addEventListener('fetch', function (event) {
   );
 
   function serveImg(request) {
-    const matchPath = requestURL.pathname.match(/^(.+)-(\d+)_(?:small|medium|large)\.jpg$/);
+    const matchPath = requestURL.pathname.match(/^(.+)-(\d+)(?:_(?:small|medium|large)\.jpg|\.svg)$/);
     const storageURL = matchPath[1];
     const imgSize = +matchPath[2];
 

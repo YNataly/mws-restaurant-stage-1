@@ -37,6 +37,7 @@
     "gulp-replace-with-sourcemaps": "^0.7.1",
     "gulp-responsive": "^2.10.0",
     "gulp-sourcemaps": "^2.6.4",
+    "gulp-svgo": "^1.5.4",
     "gulp-uglify": "^3.0.0",
     "run-sequence": "^2.2.1"
   }

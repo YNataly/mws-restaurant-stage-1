@@ -24,6 +24,7 @@ const cleanCSS = require('gulp-clean-css');
 const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
+const svgo = require('gulp-svgo'); ;
 
 const config={};
 config.allJS = 'all.js';
@@ -47,7 +48,7 @@ gulp.task('clean-dev', ['clean', 'clean-cache', 'clean-images'], function(cb) {
   runSequence('watch', cb);
 });
 
-gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images', 'sw-script']);
+gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images', 'svg', 'sw-script']);
 
 gulp.task('watch', ['create-assets'], function () {
   browserSync.init({
@@ -61,6 +62,7 @@ gulp.task('watch', ['create-assets'], function () {
   gulp.watch('./*.html', ['copy-html']);
   gulp.watch('./css/*.css', ['styles']);
   gulp.watch('./img-src/*.jpg', ['responsive-images']);
+  gulp.watch('./img-src/*.svg', ['svg']);
   gulp.watch('./js/**/*.js', ['scripts']);
   gulp.watch('./sw.js', ['sw-script']);
   gulp.watch('./build/**/*', browserSync.reload);
@@ -144,6 +146,12 @@ gulp.task('prod', ['clean-dist'], function(cb) {
   config.baseDir='./dist';
 
   runSequence('create-assets', 'initBrowserSync', cb);
+});
+
+gulp.task('svg', function() {
+  return gulp.src('./img-src/*.svg')
+    .pipe(svgo())
+    .pipe(gulp.dest(`${config.baseDir}/img`));
 });
 
 /* Create responsive images */

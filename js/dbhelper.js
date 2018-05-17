@@ -21,8 +21,7 @@ class DBHelper { // eslint-disable-line no-unused-vars
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+        const restaurants = JSON.parse(xhr.responseText);
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = `Request failed. Returned status of ${xhr.status}`;
@@ -155,18 +154,26 @@ class DBHelper { // eslint-disable-line no-unused-vars
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    const nameArr = restaurant.photograph.match(/([\w\d]*)\.jpg/);
-    let name = nameArr ? nameArr[1] : '';
-    return (`/img/${name}-500_medium.jpg`);
+    try {
+      const nameArr = restaurant.photograph.match(/([\w\d]*)(\.jpg)?/);
+      let name = nameArr[1];
+      return (`/img/${name}-500_medium.jpg`);
+    } catch(err) {
+      return '/img/restaurant.svg';
+    }
   }
 
   /**
    * Restaurant image URL.
    */
   static imageUrls(restaurant) {
-    const nameArr = restaurant.photograph.match(/([\w\d]*)\.jpg/);
-    let name = nameArr ? nameArr[1] : '';
-    return (`/img/${name}-320_small.jpg 320w, /img/${name}-400_small.jpg 400w, /img/${name}-500_medium.jpg 500w, /img/${name}-600_medium.jpg 600w, /img/${name}-800_large.jpg 800w`);
+    try {
+      const nameArr = restaurant.photograph.match(/([\w\d]*)(\.jpg)?/);
+      let name = nameArr[1];
+      return (`/img/${name}-320_small.jpg 320w, /img/${name}-400_small.jpg 400w, /img/${name}-500_medium.jpg 500w, /img/${name}-600_medium.jpg 600w, /img/${name}-800_large.jpg 800w`);
+    } catch(err) {
+      return '/img/restaurant.svg';
+    }
   }
 
   /**
