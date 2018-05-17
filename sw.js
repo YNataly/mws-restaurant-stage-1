@@ -76,13 +76,13 @@ self.addEventListener('fetch', function (event) {
   );
 
   function serveImg(request) {
-    const matchPath = requestURL.pathname.match(/^(.+)-(\d+)(?:_(?:small|medium|large)\.jpg|\.svg)$/);
+    const matchPath = requestURL.pathname.match(/^(.+)(?:-(\d+)_(?:small|medium|large)\.jpg|\.svg)$/);
     const storageURL = matchPath[1];
     const imgSize = +matchPath[2];
 
     return caches.open(imgsCache).then(function (cache) {
       return cache.match(storageURL).then(function (response) {
-        return response && greaterEq(response.url, imgSize) && response || fetch(request).then(function (nwResponse) {
+        return response && (isNaN(imgSize) || greaterEq(response.url, imgSize)) && response || fetch(request).then(function (nwResponse) {
           if (nwResponse.ok) {
             cache.put(storageURL, nwResponse.clone());
             return nwResponse;
