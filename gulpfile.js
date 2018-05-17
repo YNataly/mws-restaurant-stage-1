@@ -23,6 +23,7 @@ const gulpIf = require('gulp-if');
 const cleanCSS = require('gulp-clean-css');
 const responsive = require('gulp-responsive');
 const fs = require('fs');
+const replace = require('gulp-replace-with-sourcemaps');
 
 const config={};
 config.allJS = 'all.js';
@@ -61,6 +62,7 @@ gulp.task('watch', ['create-assets'], function () {
   gulp.watch('./css/*.css', ['styles']);
   gulp.watch('./img-src/*.jpg', ['responsive-images']);
   gulp.watch('./js/**/*.js', ['scripts']);
+  gulp.watch('./sw.js', ['sw-script']);
   gulp.watch('./build/**/*', browserSync.reload);
 });
 
@@ -114,6 +116,7 @@ gulp.task('scripts', ['eslint'], function () {
 gulp.task('sw-script', ['eslint'], function () {
   return gulp.src('./sw.js')
     .pipe(sourcemaps.init())
+    .pipe(replace(/(const jsfiles=\[)(.*?)(\];)/, `$1'js/${config.allJS}'$3`))
     .pipe(babel())
     .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write())

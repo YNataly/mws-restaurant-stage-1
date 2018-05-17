@@ -6,21 +6,20 @@ const imgsCache = 'restaurant-rev-imgs-v3';
 const currentChaches = [cacheName, imgsCache];
 
 self.addEventListener('install', function (event) {
+  const jsfiles=['js/dbhelper.js', 'js/main.js', 'js/restaurant_info.js', 'js/sw_controller.js'];
+
   event.waitUntil(
     caches.open(cacheName).then(function (cache) {
       return cache.addAll([
         'css/styles.css',
-        'data/restaurants.json',
-        'js/dbhelper.js',
-        'js/main.js',
-        'js/restaurant_info.js',
+        ...jsfiles,
         'index.html',
         'restaurant.html'
       ]).then(function () {
         let req = 'https://normalize-css.googlecode.com/svn/trunk/normalize.css';
         return fetch(req, { 'mode': 'no-cors' }).then(function (response) {
           cache.put(req, response);
-        });
+        }).catch(err => { console.error(err); });
       });
     })
   );
@@ -44,7 +43,6 @@ self.addEventListener('fetch', function (event) {
   const requestURL = new URL(event.request.url);
 
   if (requestURL.origin === location.origin) {
-
     if (requestURL.pathname === '/') {
       event.respondWith(caches.match('/index.html'));
       return;
@@ -65,7 +63,6 @@ self.addEventListener('fetch', function (event) {
     })
     );
     return;
-
   }
 
   event.respondWith(caches.match(event.request).then(function (response) {
@@ -92,7 +89,6 @@ self.addEventListener('fetch', function (event) {
           }
 
           return response || nwResponse;
-
         }).catch(function () {
           /* If we have smaller image in cache - serve it */
           return response || new Response('Unavailable', {
