@@ -1,5 +1,5 @@
 /* eslint-env serviceworker */
-//
+
 const cacheName = 'restaurant-rev-cache-v3';
 const imgsCache = 'restaurant-rev-imgs-v3';
 
