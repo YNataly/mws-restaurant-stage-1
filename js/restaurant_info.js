@@ -8,8 +8,8 @@ self.Router.add('restaurant', event => {
       return;
     }
 
-    if (self.map) {
-      self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+    if (self.googleMap) {
+      self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.googleMap);
     }
   });
 });
@@ -23,14 +23,14 @@ window.initMapForRestaurant = () => {
       console.error(error);
     } else {
       try {
-        self.map = new google.maps.Map(document.getElementById('map'), {
+        self.googleMap = new google.maps.Map(document.getElementById('map'), {
           zoom: 16,
           center: restaurant.latlng,
           scrollwheel: false
         });
 
         if (self.restaurant && !self.marker) {
-          self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+          self.marker = DBHelper.mapMarkerForRestaurant(self.restaurant, self.googleMap);
         }
       } catch(err) {
         console.error('Map init error: ' + err);

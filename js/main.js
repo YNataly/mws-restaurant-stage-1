@@ -80,7 +80,7 @@ window.initMap = () => {
     lng: -73.987501
   };
   try {
-    self.map = new google.maps.Map(document.getElementById('map'), {
+    self.googleMap = new google.maps.Map(document.getElementById('map'), {
       zoom: 12,
       center: loc,
       scrollwheel: false
@@ -181,11 +181,11 @@ const createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 const addMarkersToMap = (restaurants = self.restaurants) => {
-  if (!self.map || !restaurants) return;
+  if (!self.googleMap || !restaurants) return;
 
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.googleMap);
     if (marker) {
       google.maps.event.addListener(marker, 'click', () => {
         window.location.href = marker.url;
