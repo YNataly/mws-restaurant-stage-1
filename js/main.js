@@ -7,11 +7,10 @@ var map;
  */
 
 self.markers = [];
-
-/**
+self.Router.add('index', function() {
+  /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
   updateRestaurants();
@@ -182,7 +181,7 @@ const createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 const addMarkersToMap = (restaurants = self.restaurants) => {
-  if (!self.map) return;
+  if (!self.map || !restaurants) return;
 
   restaurants.forEach(restaurant => {
     // Add marker to the map

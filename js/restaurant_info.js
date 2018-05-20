@@ -1,6 +1,7 @@
 /* globals google, DBHelper */
+
 /* Fetch restaurant info when page loaded */
-document.addEventListener('DOMContentLoaded', event => {
+self.Router.add('restaurant', event => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', event => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+window.initMapForRestaurant = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -52,8 +53,8 @@ const fetchRestaurantFromURL = (callback) => {
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
-      /* This callback is called async from DBHelper XHR onload handler.
-        It may be called concurrently from DOMContentLoaded and initMap handlers.
+      /* This callback is called async from DBHelper fetch handler.
+        It may be called concurrently from DOMContentLoaded and initMapForRestaurant handlers.
         Make sure it called only one time by checking self.restaurant */
 
       if (self.restaurant) { // restaurant already filled!

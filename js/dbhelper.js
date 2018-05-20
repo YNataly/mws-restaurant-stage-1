@@ -39,19 +39,15 @@ class DBHelper { // eslint-disable-line no-unused-vars
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (self.restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
-    });
+    return fetch(DBHelper.DATABASE_URL+`/${id}`)
+      .then(resp => {
+        if (resp.status=== 200)
+          return resp.json();
+        const error = `Request failed. Returned status of ${resp.status}`;
+        throw error;
+      })
+      .then(restaurant => callback(null, restaurant))
+      .catch(err => callback(`Error during fetch restaurant with id=${id}. ${err}`, null));
   }
 
   /**

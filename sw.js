@@ -1,12 +1,12 @@
 /* eslint-env serviceworker */
-
+//
 const cacheName = 'restaurant-rev-cache-v3';
 const imgsCache = 'restaurant-rev-imgs-v3';
 
 const currentChaches = [cacheName, imgsCache];
 
 self.addEventListener('install', function (event) {
-  const jsfiles=['js/dbhelper.js', 'js/main.js', 'js/restaurant_info.js', 'js/sw_controller.js'];
+  const jsfiles=['js/dbhelper.js', 'js/main.js', 'js/restaurant_info.js', 'js/sw_controller.js', 'js/router.js'];
 
   event.waitUntil(
     caches.open(cacheName).then(function (cache) {

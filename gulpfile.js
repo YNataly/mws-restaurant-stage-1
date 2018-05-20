@@ -106,7 +106,7 @@ gulp.task('eslint', function () {
 });
 
 gulp.task('scripts', ['eslint'], function () {
-  return gulp.src('./js/*.js')
+  return gulp.src(['./js/router.js', './js/*.js'])
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat(`${config.allJS}`))
