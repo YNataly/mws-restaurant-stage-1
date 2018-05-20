@@ -3,3 +3,4 @@ oldGruntfile.js
 dist
 build
 .vscode/
+.cache.images.json

@@ -150,6 +150,7 @@ gulp.task('prod', ['clean-dist'], function(cb) {
 
 gulp.task('svg', function() {
   return gulp.src('./img-src/*.svg')
+    .pipe(cached(config.imageCacheName))
     .pipe(svgo())
     .pipe(gulp.dest(`${config.baseDir}/img`));
 });
