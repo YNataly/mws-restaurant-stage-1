@@ -1,41 +1,47 @@
 /* eslint-env serviceworker */
-
-const cacheName = 'restaurant-rev-cache-v3';
+const DBController=require('./js/indexed.js');
+//
+const cacheName = 'restaurant-rev-cache-v2';
 const imgsCache = 'restaurant-rev-imgs-v3';
 
 const currentChaches = [cacheName, imgsCache];
 
+const db=new DBController();
+const port=1337;
+const dbAPIURL=new URL(`http://localhost:${port}/restaurants`);
+//
+const defaultRestaurantImg='img/restaurant.svg';
+const defaultRestaurantImgName=defaultRestaurantImg.match(/^.*\/([^/]+)\.svg$/i)[1];
+
 self.addEventListener('install', function (event) {
   const jsfiles=['js/dbhelper.js', 'js/main.js', 'js/restaurant_info.js', 'js/sw_controller.js', 'js/router.js'];
+  const cssfiles=['css/normalize.css', 'css/styles.css'];
 
   event.waitUntil(
     caches.open(cacheName).then(function (cache) {
       return cache.addAll([
-        'css/styles.css',
+        ...cssfiles,
         ...jsfiles,
         'index.html',
-        'restaurant.html'
-      ]).then(function () {
-        let req = 'https://normalize-css.googlecode.com/svn/trunk/normalize.css';
-        return fetch(req, { 'mode': 'no-cors' }).then(function (response) {
-          cache.put(req, response);
-        }).catch(err => { console.error(`from sw: ${err}`); });
-      });
-    })
+        'restaurant.html',
+        defaultRestaurantImg
+      ]);
+    }).catch(err => { console.error(`from sw: ${err}`); return Promise.reject(err); })
   );
 });
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then(function (cacheNames) {
-      return Promise.all(
-        cacheNames.filter(function (cName) {
-          return cName.startsWith('restaurant-rev-') && !currentChaches.includes(cName);
-        }).map(function (cName) {
-          return caches.delete(cName);
-        })
-      );
-    })
+    Promise.all([db.createDatabase(),
+      caches.keys().then(function (cacheNames) {
+        return Promise.all(
+          cacheNames.filter(function (cName) {
+            return cName.startsWith('restaurant-rev-') && !currentChaches.includes(cName);
+          }).map(function (cName) {
+            return caches.delete(cName);
+          })
+        );
+      })])
   );
 });
 
@@ -63,6 +69,47 @@ self.addEventListener('fetch', function (event) {
     })
     );
     return;
+  } else if (requestURL.origin === dbAPIURL.origin) {
+    const pathParts=requestURL.pathname.match(/^\/(restaurants)(?:\/([^/]+))?$/i);
+    const restId=+pathParts[2];
+
+    if (pathParts) {
+      if (restId) {
+        // request for restaurant info
+        event.respondWith(
+          db.getRestaurantInfo(restId).then(info => {
+            console.log(info);
+            if (!info) {
+              return fetch(event.request).then(resp => {
+                db.addRestaurantInfoFromResponse(resp.clone(), restId);
+                return resp;
+              });
+            } else { // return existing in db restaurant info and update db
+              fetch(event.request).then(resp => { db.addRestaurantInfoFromResponse(resp, restId); });
+              return new Response(JSON.stringify(info), {'status': 200});
+            }
+          }).catch(unavailable));
+      } else {
+        // request for all restaurants
+        event.respondWith(
+          db.getAllRestaurants().then(allRest => {
+            // console.log(allRest);
+            if (!allRest) {
+              return fetch(event.request).then(resp => {
+                db.addRestaurantsFromResponse(resp.clone());
+                return resp;
+              });
+            } else { // return existing in db restaurants and update db
+              fetch(event.request).then(resp => { db.addRestaurantsFromResponse(resp); });
+              return new Response(JSON.stringify(allRest), {'status': 200});
+            }
+          }).catch(unavailable));
+      }
+    } else {
+      // request that not in indexedDB
+      event.respondWith(fetch(event.request).catch(unavailable));
+    }
+    return;
   }
 
   event.respondWith(caches.match(event.request).then(function (response) {
@@ -88,13 +135,14 @@ self.addEventListener('fetch', function (event) {
             return nwResponse;
           }
 
-          return response || nwResponse;
-        }).catch(function () {
-          /* If we have smaller image in cache - serve it */
-          return response || new Response('Unavailable', {
+          if (response) return response;
+          throw new Error(nwResponse);
+        }).catch(function (err) {
+          /* If we have smaller image in cache - serve it, otherwise serve restaurant.svg */
+          return response || (storageURL === defaultRestaurantImgName? new Response('Unavailable', {
             'status': 503,
             'statusText': 'Service Unavailable'
-          });
+          }) : serveImg(defaultRestaurantImg));
         });
       });
     });
@@ -106,6 +154,6 @@ self.addEventListener('fetch', function (event) {
 
   function unavailable(err) {
     console.log(err);
-    return new Response('Unavailable');
+    return new Response('Unavailable', {'status': 503});
   }
 });

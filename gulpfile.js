@@ -25,9 +25,11 @@ const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
 const svgo = require('gulp-svgo'); ;
+const bro = require('gulp-bro');
 
 const config={};
 config.allJS = 'all.js';
+config.allCSS='style.css';
 config.isProduction=false;
 config.baseDir='./build';
 config.imageCacheName='images';
@@ -48,7 +50,7 @@ gulp.task('clean-dev', ['clean', 'clean-cache', 'clean-images'], function(cb) {
   runSequence('watch', cb);
 });
 
-gulp.task('create-assets', ['copy-html', 'styles', 'scripts', 'responsive-images', 'svg', 'sw-script']);
+gulp.task('create-assets', ['copy-html', 'styles', 'responsive-images', 'svg', 'sw-script', 'scripts']);
 
 gulp.task('watch', ['create-assets'], function () {
   browserSync.init({
@@ -63,23 +65,25 @@ gulp.task('watch', ['create-assets'], function () {
   gulp.watch('./css/*.css', ['styles']);
   gulp.watch('./img-src/*.jpg', ['responsive-images']);
   gulp.watch('./img-src/*.svg', ['svg']);
-  gulp.watch('./js/**/*.js', ['scripts']);
-  gulp.watch('./sw.js', ['sw-script']);
+  gulp.watch(['./js/**/*.js', '!./js/indexed.js'], ['scripts']);
+  gulp.watch(['./sw.js', './js/indexed.js'], ['sw-script']);
   gulp.watch('./build/**/*', browserSync.reload);
 });
 
 gulp.task('copy-html', function () {
   return gulp.src('*.html')
     .pipe(htmlreplace({
-      'js-file': `js/${config.allJS}`
+      'js-file': `js/${config.allJS}`,
+      'css-file': `css/${config.allCSS}`
     }))
     .pipe(gulp.dest(`${config.baseDir}`));
 });
 
 gulp.task('styles', function () {
-  return gulp.src('./css/*.css')
+  return gulp.src(['./css/normalize.css', './css/*.css'])
     .pipe(sourcemaps.init())
     .pipe(postcss([autoprefixer()]))
+    .pipe(concat(config.allCSS))
     .pipe(gulpIf(config.isProduction, cleanCSS()))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(`${config.baseDir}/css`));
@@ -99,14 +103,14 @@ gulp.task('clean-images', function() {
 });
 
 gulp.task('eslint', function () {
-  return gulp.src('./js/**/*.js')
+  return gulp.src(['./js/**/*.js', './sw.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
 gulp.task('scripts', ['eslint'], function () {
-  return gulp.src(['./js/router.js', './js/*.js'])
+  return gulp.src(['./js/router.js', './js/dbhelper.js', './js/*.js', '!./js/indexed.js'])
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat(`${config.allJS}`))
@@ -118,7 +122,9 @@ gulp.task('scripts', ['eslint'], function () {
 gulp.task('sw-script', ['eslint'], function () {
   return gulp.src('./sw.js')
     .pipe(sourcemaps.init())
+    .pipe(bro())
     .pipe(replace(/(const jsfiles=\[)(.*?)(\];)/, `$1'js/${config.allJS}'$3`))
+    .pipe(replace(/(const cssfiles=\[)(.*?)(\];)/, `$1'css/${config.allCSS}'$3`))
     .pipe(babel())
     .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write())
