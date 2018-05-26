@@ -30,7 +30,7 @@ class DBController {
       }
     })
       .then(db => {
-        db._db.onclose=() => { console.log('db closed'); dbController.dbPromise=null; };
+        db._db.onclose=() => { console.log('db closed'); dbController.dbPromise=undefined; };
         return db;
       });
 
@@ -52,7 +52,7 @@ class DBController {
       const tx=db.transaction(dbController.restaurantsStore, 'readwrite');
       const store=tx.objectStore(dbController.restaurantsStore);
       return Promise.all(jsonArr.map(item => store.put(item)))
-        .then(() => console.log(`Restaurants (${jsonArr.length}) added/updated to db`))
+        // .then(() => console.log(`Restaurants (${jsonArr.length}) added/updated to db`))
         .catch(err => {
           tx.abort();
           throw new Error(`Error during adding restautrants to db. ${err}`);
@@ -80,7 +80,7 @@ class DBController {
       store.put(data);
       return tx.complete;
     })
-      .then(() => console.log(`restaurant ${data.id} info added/updated`))
+      // .then(() => console.log(`restaurant ${data.id} info added/updated`))
       .catch(err => console.error(`Error during adding restautrant ${data.id} info to db. ${err}`));
   }
 
@@ -112,7 +112,7 @@ class DBController {
       const tx=db.transaction(dbController.restaurantInfo, 'readonly');
       return tx.objectStore(dbController.restaurantInfo).get(id);
     })
-      .catch(err => console.error(`Error during get restautrant ${id} info to db. ${err}`));
+      .catch(err => console.error(`Error during get restautrant ${id} info from db. ${err}`));
   }
 }
 

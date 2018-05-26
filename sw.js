@@ -94,7 +94,7 @@ self.addEventListener('fetch', function (event) {
         event.respondWith(
           db.getAllRestaurants().then(allRest => {
             // console.log(allRest);
-            if (allRest===undefined || allRest.length===0) {
+            if (!allRest || allRest.length===0) {
               return fetch(event.request).then(resp => {
                 db.addRestaurantsFromResponse(resp.clone());
                 return resp;
