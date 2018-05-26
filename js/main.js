@@ -137,9 +137,11 @@ const resetRestaurants = (restaurants) => {
  */
 const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
+  const fragment=document.createDocumentFragment();
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+    fragment.append(createRestaurantHTML(restaurant));
   });
+  ul.appendChild(fragment);
   addMarkersToMap();
 };
 
@@ -155,7 +157,7 @@ const createRestaurantHTML = (restaurant) => {
   image.srcset = DBHelper.imageUrls(restaurant);
   image.sizes = '(min-width: 1242px) 400px, (min-width: 800px) 33vw, (min-width: 540px) 49vw,  100vw';
   image.alt = `Restaurant ${restaurant.name}`;
-  li.append(image);
+  image.onload=() => { li.prepend(image); };
 
   const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
