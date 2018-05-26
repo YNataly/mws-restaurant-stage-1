@@ -73,7 +73,9 @@ gulp.task('watch', ['create-assets'], function () {
 gulp.task('copy-html', function () {
   return gulp.src('*.html')
     .pipe(htmlreplace({
-      'js-file': `js/${config.allJS}`,
+      'js-file': {
+        src: `js/${config.allJS}`,
+        tpl: '<script defer src="%s"></script>'},
       'css-file': `css/${config.allCSS}`
     }))
     .pipe(gulp.dest(`${config.baseDir}`));
@@ -85,7 +87,7 @@ gulp.task('styles', function () {
     .pipe(postcss([autoprefixer()]))
     .pipe(concat(config.allCSS))
     .pipe(gulpIf(config.isProduction, cleanCSS()))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${config.baseDir}/css`));
 });
 
@@ -115,7 +117,7 @@ gulp.task('scripts', ['eslint'], function () {
     .pipe(babel())
     .pipe(concat(`${config.allJS}`))
     .pipe(gulpIf(config.isProduction, uglify()))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${config.baseDir}/js`));
 });
 
@@ -127,7 +129,7 @@ gulp.task('sw-script', ['eslint'], function () {
     .pipe(replace(/(const cssfiles=\[)(.*?)(\];)/, `$1'css/${config.allCSS}'$3`))
     .pipe(babel())
     .pipe(gulpIf(config.isProduction, uglify()))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${config.baseDir}`));
 });
 
@@ -156,7 +158,7 @@ gulp.task('prod', ['clean-dist'], function(cb) {
 
 gulp.task('svg', function() {
   return gulp.src('./img-src/*.svg')
-    .pipe(cached(config.imageCacheName))
+    .pipe(gulpIf(!config.isProduction, cached(config.imageCacheName)))
     .pipe(svgo())
     .pipe(gulp.dest(`${config.baseDir}/img`));
 });
