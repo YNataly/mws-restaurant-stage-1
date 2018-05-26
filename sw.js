@@ -78,7 +78,7 @@ self.addEventListener('fetch', function (event) {
         // request for restaurant info
         event.respondWith(
           db.getRestaurantInfo(restId).then(info => {
-            console.log(info);
+            // console.log(info);
             if (!info) {
               return fetch(event.request).then(resp => {
                 db.addRestaurantInfoFromResponse(resp.clone(), restId);
@@ -94,7 +94,7 @@ self.addEventListener('fetch', function (event) {
         event.respondWith(
           db.getAllRestaurants().then(allRest => {
             // console.log(allRest);
-            if (!allRest) {
+            if (allRest===undefined || allRest.length===0) {
               return fetch(event.request).then(resp => {
                 db.addRestaurantsFromResponse(resp.clone());
                 return resp;

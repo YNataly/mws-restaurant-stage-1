@@ -190,3 +190,5 @@ class DBHelper { // eslint-disable-line no-unused-vars
     }
   }
 }
+
+DBHelper.dbURL=new URL(DBHelper.DATABASE_URL);

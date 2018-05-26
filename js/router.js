@@ -16,7 +16,7 @@ self.Router = (function() {
 })();
 
 window.addEventListener('DOMContentLoaded', function(event) {
-  const path=window.location.pathname.match(/^\/$|^\/([\w\d]+)\.html/i);
+  const path=window.location.pathname.match(/^\/$|^\/([\w\d-]+)\.html/i);
   if (!path) return;
   const func = path[0]==='/'? self.Router.route('index') : self.Router.route(path[1]);
   if (func)
