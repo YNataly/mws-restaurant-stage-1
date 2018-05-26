@@ -14,28 +14,6 @@ class DBHelper { // eslint-disable-line no-unused-vars
   }
 
   /**
-   * Fetch all restaurants.
-   */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const restaurants = JSON.parse(xhr.responseText);
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = `Request failed. Returned status of ${xhr.status}`;
-        callback(error, null);
-      }
-    };
-    xhr.onerror=() => {
-      const error = `Request failed. Returned status of ${xhr.status}`;
-      callback(error, null);
-    };
-    xhr.send();
-  }
-
-  /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -192,3 +170,44 @@ class DBHelper { // eslint-disable-line no-unused-vars
 }
 
 DBHelper.dbURL=new URL(DBHelper.DATABASE_URL);
+
+/**
+   * Fetch all restaurants.
+   */
+DBHelper.fetchRestaurants = (function() {
+  const oneHour=60*60*1000; // in ms
+  let lastTime=Date.now()-oneHour-1;
+  let result;
+
+  return function(callback, force=false) {
+    if (force || Date.now()-lastTime>oneHour) {
+      lastTime=Date.now();
+      result=new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', DBHelper.DATABASE_URL);
+        xhr.onload = () => {
+          if (xhr.status === 200) { // Got a success response from server!
+            let resultRestaurants = JSON.parse(xhr.responseText);
+            lastTime=Date.now();
+            resolve(resultRestaurants);
+            callback(null, resultRestaurants);
+          } else { // Oops!. Got an error from server.
+            const error = `Request failed. Returned status of ${xhr.status}`;
+            lastTime=Date.now()-oneHour-1;
+            reject(error);
+            callback(error, null);
+          }
+        };
+        xhr.onerror=() => {
+          const error = `Request failed. Returned status of ${xhr.status}`;
+          lastTime=Date.now()-oneHour-1;
+          reject(error);
+          callback(error, null);
+        };
+        xhr.send();
+      });
+    } else {
+      result.then(restaurants => callback(null, restaurants)).catch(error => callback(error, null));
+    }
+  };
+})();

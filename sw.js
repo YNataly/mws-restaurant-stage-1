@@ -1,7 +1,7 @@
 /* eslint-env serviceworker */
 const DBController=require('./js/indexed.js');
 //
-const cacheName = 'restaurant-rev-cache-v2';
+const cacheName = 'restaurant-rev-cache-v3';
 const imgsCache = 'restaurant-rev-imgs-v3';
 
 const currentChaches = [cacheName, imgsCache];
