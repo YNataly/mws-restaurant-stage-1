@@ -24,8 +24,8 @@ const cleanCSS = require('gulp-clean-css');
 const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
-const svgo = require('gulp-svgo'); ;
-const bro = require('gulp-bro');
+const svgo = require('gulp-svgo');
+// const uncss = require('gulp-uncss');
 
 const config={};
 config.allJS = 'all.js';
@@ -65,8 +65,8 @@ gulp.task('watch', ['create-assets'], function () {
   gulp.watch('./css/*.css', ['styles']);
   gulp.watch('./img-src/*.jpg', ['responsive-images']);
   gulp.watch('./img-src/*.svg', ['svg']);
-  gulp.watch(['./js/**/*.js', '!./js/indexed.js'], ['scripts']);
-  gulp.watch(['./sw.js', './js/indexed.js'], ['sw-script']);
+  gulp.watch(['./js/**/*.js'], ['scripts']);
+  gulp.watch(['./sw.js'], ['sw-script']);
   gulp.watch('./build/**/*', browserSync.reload);
 });
 
@@ -105,14 +105,14 @@ gulp.task('clean-images', function() {
 });
 
 gulp.task('eslint', function () {
-  return gulp.src(['./js/**/*.js', './sw.js'])
+  return gulp.src(['./js/**/*.js', './sw.js', '!js/idb.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
 gulp.task('scripts', ['eslint'], function () {
-  return gulp.src(['./js/router.js', './js/dbhelper.js', './js/*.js', '!./js/indexed.js'])
+  return gulp.src(['./js/router.js', 'js/idb.js', 'js/indexed.js', './js/dbhelper.js', './js/**/*.js'])
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat(`${config.allJS}`))
@@ -124,10 +124,8 @@ gulp.task('scripts', ['eslint'], function () {
 gulp.task('sw-script', ['eslint'], function () {
   return gulp.src('./sw.js')
     .pipe(sourcemaps.init())
-    .pipe(bro())
     .pipe(replace(/(const jsfiles=\[)(.*?)(\];)/, `$1'js/${config.allJS}'$3`))
     .pipe(replace(/(const cssfiles=\[)(.*?)(\];)/, `$1'css/${config.allCSS}'$3`))
-    .pipe(babel())
     .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${config.baseDir}`));

@@ -158,7 +158,6 @@ nav[aria-label="Breadcrumb"]{
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
-  /*height: 3.5rem;*/
   background-color: #207AB6;
   align-items: center;
 }

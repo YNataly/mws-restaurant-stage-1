@@ -1,7 +1,7 @@
-//
-const idb=require('idb');
+/* globals idb */
+/* exported DBController */
 
-class DBController {
+class DBController { // eslint-disable-line no-unused-vars
   constructor() {
     this.db_name='restaurants';
     this.restaurantsStore='restaurants';
@@ -60,7 +60,7 @@ class DBController {
     }).catch(err => console.log(err));
   }
 
-  addRestaurantsFromResponse(response) {
+  /* addRestaurantsFromResponse(response) {
     if (response.status!== 200) {
       console.log(`Can't add restaurants to db. Response status:  ${response.status}`);
       return;
@@ -69,7 +69,7 @@ class DBController {
     const dbController=this;
     return response.json().then(restaurants => dbController.addRestaurants(restaurants))
       .catch(err => console.log(err));
-  }
+  } */
 
   addRestaurantInfo(data) {
     const dbController=this;
@@ -84,7 +84,7 @@ class DBController {
       .catch(err => console.error(`Error during adding restautrant ${data.id} info to db. ${err}`));
   }
 
-  addRestaurantInfoFromResponse(response, restId) {
+  /* addRestaurantInfoFromResponse(response, restId) {
     if (response.status!== 200) {
       console.log(`Can't add restaurant ${restId} info to db. Response status:  ${response.status}`);
       return;
@@ -93,7 +93,7 @@ class DBController {
     const dbController=this;
     return response.json().then(restaurant => dbController.addRestaurantInfo(restaurant))
       .catch(err => console.log(err));
-  }
+  } */
 
   getAllRestaurants() {
     const dbController=this;
@@ -115,5 +115,3 @@ class DBController {
       .catch(err => console.error(`Error during get restautrant ${id} info from db. ${err}`));
   }
 }
-
-module.exports= DBController;
