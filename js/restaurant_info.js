@@ -6,17 +6,18 @@ self.Router.add('restaurant', event => {
     fillBreadcrumb(rest);
     fillRestaurantHTML(rest);
 
-    if (self.googleMap) {
+    /* if (self.googleMap) {
       self.marker = DBHelper.mapMarkerForRestaurant(rest, self.googleMap);
-    }
+    } */
   }).catch(err => console.error(err));
 });
 
 self.Router.addOnLoad('restaurant', event => {
-  window.initMapForRestaurant();
+  const script=document.createElement('script');
+  script.src='https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMapForRestaurant';
+  document.body.appendChild(script);
 });
 
-window.initMap0=() => {};
 /**
  * Initialize Google map, called from HTML.
  */
@@ -78,12 +79,12 @@ const fillRestaurantHTML = (restaurant) => {
   el=document.createElement('img');
   el.id='restaurant-img';
   el.className = 'restaurant-img';
-  el.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-  el.dataset.src = DBHelper.imageUrlForRestaurant(restaurant);
-  el.dataset.srcset= DBHelper.imageUrls(restaurant);
+  // el.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  el.src = DBHelper.imageUrlForRestaurant(restaurant);
+  el.srcset= DBHelper.imageUrls(restaurant);
   el.sizes='(min-width: 1400px) 800px, (min-width: 1000px) 60vw,  (min-width: 820px) 55vw, (min-width: 590px) 80vw,  100vw';
   el.alt=`Restaurant ${restaurant.name}`;
-  const image=el;
+  // const image=el;
   section.appendChild(el);
 
   el=document.createElement('p');
@@ -114,6 +115,7 @@ const fillRestaurantHTML = (restaurant) => {
 
   document.getElementById('maincontent').prepend(fragment);
 
+  /*
   const bkimage=document.createElement('img');
   bkimage.sizes=image.sizes;
   bkimage.srcset=image.dataset.srcset;
@@ -123,7 +125,7 @@ const fillRestaurantHTML = (restaurant) => {
     image.src=image.dataset.src;
   };
 
-  /* const name = document.getElementById('restaurant-name');
+   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
   const address = document.getElementById('restaurant-address');

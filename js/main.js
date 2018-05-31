@@ -16,6 +16,12 @@ self.Router.add('index', function() {
   updateRestaurants();
 });
 
+self.Router.addOnLoad('index', event => {
+  const script=document.createElement('script');
+  script.src='https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap';
+  document.body.appendChild(script);
+});
+
 /**
  * Fetch all neighborhoods and set their HTML.
  */
@@ -142,7 +148,7 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
     fragment.append(createRestaurantHTML(restaurant));
   });
   ul.appendChild(fragment);
-  addMarkersToMap();
+  // addMarkersToMap();
 };
 
 /**

@@ -26,8 +26,9 @@ self.Router = (function() {
   };
 })();
 
+const path=window.location.pathname.match(/^\/$|^\/([^/]+?)\.html/i);
+
 window.addEventListener('DOMContentLoaded', function(event) {
-  const path=window.location.pathname.match(/^\/$|^\/([\w\d-]+)\.html/i);
   if (!path) return;
   const func = path[0]==='/'? self.Router.route('index') : self.Router.route(path[1]);
   if (func)
@@ -35,7 +36,6 @@ window.addEventListener('DOMContentLoaded', function(event) {
 });
 
 window.addEventListener('load', function(event) {
-  const path=window.location.pathname.match(/^\/$|^\/([\w\d-]+)\.html/i);
   if (!path) return;
   const func = path[0]==='/'? self.Router.onloadRoute('index') : self.Router.onloadRoute(path[1]);
   if (func)

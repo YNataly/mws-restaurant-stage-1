@@ -24,7 +24,9 @@ const cleanCSS = require('gulp-clean-css');
 const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
-const svgo = require('gulp-svgo');
+// const svgo = require('gulp-svgo');
+const debug = require('gulp-debug');
+const imagemin = require('gulp-imagemin');
 // const uncss = require('gulp-uncss');
 
 const config={};
@@ -50,7 +52,7 @@ gulp.task('clean-dev', ['clean', 'clean-cache', 'clean-images'], function(cb) {
   runSequence('watch', cb);
 });
 
-gulp.task('create-assets', ['copy-html', 'styles', 'responsive-images', 'svg', 'sw-script', 'scripts']);
+gulp.task('create-assets', ['copy-html', 'copy-manifest', 'styles', 'responsive-images', 'svg_png', 'sw-script', 'scripts']);
 
 gulp.task('watch', ['create-assets'], function () {
   browserSync.init({
@@ -61,17 +63,23 @@ gulp.task('watch', ['create-assets'], function () {
     console.log(bs.options.get('urls').toJS());
   });
 
-  gulp.watch('./*.html', ['copy-html']);
+  gulp.watch(['index.html', 'restaurant.html'], ['copy-html']);
+  gulp.watch('*manifest*.json', ['copy-manifest']);
   gulp.watch('./css/*.css', ['styles']);
   gulp.watch('./img-src/*.jpg', ['responsive-images']);
-  gulp.watch('./img-src/*.svg', ['svg']);
+  gulp.watch('./img-src/*.{png,svg}', ['svg_png']);
   gulp.watch(['./js/**/*.js'], ['scripts']);
   gulp.watch(['./sw.js'], ['sw-script']);
   gulp.watch('./build/**/*', browserSync.reload);
 });
 
+gulp.task('copy-manifest', function () {
+  return gulp.src('*manifest*.json')
+    .pipe(gulp.dest(`${config.baseDir}`));
+});
+
 gulp.task('copy-html', function () {
-  return gulp.src('*.html')
+  return gulp.src(['index.html', 'restaurant.html'])
     .pipe(htmlreplace({
       'js-file': {
         src: `js/${config.allJS}`,
@@ -105,14 +113,14 @@ gulp.task('clean-images', function() {
 });
 
 gulp.task('eslint', function () {
-  return gulp.src(['./js/**/*.js', './sw.js', '!js/idb.js'])
+  return gulp.src(['!js/idb.js', './js/**/*.js', './sw.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
 gulp.task('scripts', ['eslint'], function () {
-  return gulp.src(['./js/router.js', 'js/idb.js', 'js/indexed.js', './js/dbhelper.js', './js/**/*.js'])
+  return gulp.src(['./js/router.js', './js/idb.js', './js/indexed.js', './js/dbhelper.js', './js/**/*.js'])
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat(`${config.allJS}`))
@@ -126,6 +134,7 @@ gulp.task('sw-script', ['eslint'], function () {
     .pipe(sourcemaps.init())
     .pipe(replace(/(const jsfiles=\[)(.*?)(\];)/, `$1'js/${config.allJS}'$3`))
     .pipe(replace(/(const cssfiles=\[)(.*?)(\];)/, `$1'css/${config.allCSS}'$3`))
+    .pipe(babel())
     .pipe(gulpIf(config.isProduction, uglify()))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${config.baseDir}`));
@@ -154,19 +163,29 @@ gulp.task('prod', ['clean-dist'], function(cb) {
   runSequence('create-assets', 'initBrowserSync', cb);
 });
 
-gulp.task('svg', function() {
-  return gulp.src('./img-src/*.svg')
+gulp.task('svg_png', function() {
+  return gulp.src('./img-src/*.{png,svg}')
     .pipe(gulpIf(!config.isProduction, cached(config.imageCacheName)))
-    .pipe(svgo())
+    .pipe(imagemin([
+      imagemin.optipng({speed: 1,
+        quality: 70}),
+
+      imagemin.svgo({
+        plugins: [{
+          removeViewBox: false
+        }]
+      })
+    ]))
     .pipe(gulp.dest(`${config.baseDir}/img`));
 });
 
 /* Create responsive images */
 gulp.task('responsive-images', function() {
-  const imgStream = gulp.src('./img-src/*.jpg')
+  const imgStream = gulp.src(['./img-src/*.jpg'])
     .pipe(gulpIf(!config.isProduction, cached(config.imageCacheName)))
+    // .pipe(debug())
     .pipe(responsive({
-      '*': [{
+      '*.jpg': [{
         width: 800,
         rename: { suffix: '-800_large' }
       }, {
