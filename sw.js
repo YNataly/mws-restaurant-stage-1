@@ -1,11 +1,11 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v4';
-  const imgsCache = 'restaurant-rev-imgs-v4';
-  //
-  const currentChaches = [cacheName, imgsCache];
+  const cacheName = 'restaurant-rev-cache-v3';
+  const imgsCache = 'restaurant-rev-imgs-v3';
 
+  const currentCaches = [cacheName, imgsCache];
+  //
   const defaultRestaurantImg='img/restaurant.svg';
   const icons=['img/restaurants-icon-48.png', 'img/restaurants-icon-192.png', 'img/restaurants-icon-512.png'];
   const defaultRestaurantImgName=defaultRestaurantImg.match(/^.*\/([^/]+)\.svg$/i)[1];
@@ -15,17 +15,22 @@
     const cssfiles=['css/normalize.css', 'css/styles.css'];
 
     event.waitUntil(
-      caches.open(cacheName).then(function (cache) {
+      Promise.all([caches.open(cacheName).then(function (cache) {
         return cache.addAll([
           ...cssfiles,
           ...jsfiles,
           'index.html',
           'restaurant.html',
-          'mws-manifest.json',
+          'mws-manifest.json'
+        ]);
+      }),
+      caches.open(imgsCache).then(function (cache) {
+        return cache.addAll([
           defaultRestaurantImg,
           ...icons
         ]);
-      }).catch(err => { console.error(`from sw: ${err}`); return Promise.reject(err); })
+      })])
+        .catch(err => { console.error(`from sw: ${err}`); return Promise.reject(err); })
     );
   });
 
@@ -34,7 +39,7 @@
       caches.keys().then(function (cacheNames) {
         return Promise.all(
           cacheNames.filter(function (cName) {
-            return cName.startsWith('restaurant-rev-') && !currentChaches.includes(cName);
+            return cName.startsWith('restaurant-rev-') && !currentCaches.includes(cName);
           }).map(function (cName) {
             return caches.delete(cName);
           })
@@ -72,7 +77,7 @@
   });
 
   function serveImg(request, requestURL) {
-    const matchPath = requestURL.pathname.match(/^(.+)(?:-(\d+)_(?:small|medium|large)\.jpg|\.svg)$/);
+    const matchPath = requestURL.pathname.match(/^(.+)(?:-(\d+)_(?:small|medium|large)\.jpg|\.svg|\.png)$/);
     const storageURL = matchPath[1];
     const imgSize = +matchPath[2];
 
