@@ -1,14 +1,13 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v3';
-  const imgsCache = 'restaurant-rev-imgs-v3';
+  const cacheName = 'restaurant-rev-cache-v4';
+  const imgsCache = 'restaurant-rev-imgs-v4';
 
   const currentCaches = [cacheName, imgsCache];
   //
   const defaultRestaurantImg='img/restaurant.svg';
   const icons=['img/restaurants-icon-48.png', 'img/restaurants-icon-192.png', 'img/restaurants-icon-512.png'];
-  const defaultRestaurantImgName=defaultRestaurantImg.match(/^.*\/([^/]+)\.svg$/i)[1];
 
   self.addEventListener('install', function (event) {
     const jsfiles=['js/idb.js', 'js/indexed.js', 'js/dbhelper.js', 'js/main.js', 'js/restaurant_info.js', 'js/sw_controller.js', 'js/router.js'];
@@ -77,8 +76,9 @@
   });
 
   function serveImg(request, requestURL) {
-    const matchPath = requestURL.pathname.match(/^(.+)(?:-(\d+)_(?:small|medium|large)\.jpg|\.svg|\.png)$/);
-    const storageURL = matchPath[1];
+    const path= requestURL.pathname || requestURL;
+    const matchPath = path.match(/^(?:(.+)-(\d+)_(?:small|medium|large)\.jpg)|(?:.+\.svg)|(?:.+\.png)$/);
+    const storageURL = matchPath[1] || matchPath[0];
     const imgSize = +matchPath[2];
 
     return caches.open(imgsCache).then(function (cache) {
@@ -93,10 +93,10 @@
           throw new Error(nwResponse);
         }).catch(function (err) {
         /* If we have smaller image in cache - serve it, otherwise serve restaurant.svg */
-          return response || (storageURL === defaultRestaurantImgName? new Response('Unavailable', {
+          return response || (storageURL === defaultRestaurantImg? new Response('Unavailable', {
             'status': 503,
             'statusText': 'Service Unavailable'
-          }) : serveImg(defaultRestaurantImg));
+          }) : serveImg(defaultRestaurantImg, defaultRestaurantImg));
         });
       });
     });
