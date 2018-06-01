@@ -1,11 +1,11 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v3';
+  const cacheName = 'restaurant-rev-cache-v4';
   const imgsCache = 'restaurant-rev-imgs-v3';
-  //
-  const currentChaches = [cacheName, imgsCache];
 
+  const currentChaches = [cacheName, imgsCache];
+  //
   const defaultRestaurantImg='img/restaurant.svg';
   const icons=['img/restaurants-icon-192.png', 'img/restaurants-icon-512.png'];
   const defaultRestaurantImgName=defaultRestaurantImg.match(/^.*\/([^/]+)\.svg$/i)[1];

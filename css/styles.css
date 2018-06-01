@@ -205,7 +205,7 @@ nav[aria-label="Breadcrumb"]{
   min-height: 380px;
   padding: 0 0 25px;
   text-align: center;
-  flex: 0 1 auto;
+  flex: 0 1 100%;
 }
 
 #restaurants-list .restaurant-img{
@@ -529,6 +529,7 @@ nav[aria-label="Breadcrumb"]{
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
+    flex-basis: auto;
 
   }
 
