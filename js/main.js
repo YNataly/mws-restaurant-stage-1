@@ -83,7 +83,7 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+window.initMap = (restaurants=self.restaurants) => {
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -95,11 +95,10 @@ window.initMap = () => {
       scrollwheel: false
     });
 
-    if (self.markers.length === 0) {
-      addMarkersToMap();
-    }
+    addMarkersToMap(restaurants);
   } catch(err) {
     console.error('Map init error: ' + err);
+    DBHelper.createMap(restaurants, {zoom: 12, center: {lat: 40.722216, lng: -73.987501}, initJSMapCallback: 'initMap'});
   }
 };
 
@@ -122,7 +121,10 @@ const updateRestaurants = () => {
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
-      DBHelper.createMap(restaurants, {zoom: 12, center: {lat: 40.722216, lng: -73.987501}});
+      if (self.googleMap)
+        addMarkersToMap(restaurants);
+      else
+        DBHelper.createMap(restaurants, {zoom: 12, center: {lat: 40.722216, lng: -73.987501}, initJSMapCallback: 'initMap'});
     }
   });
 };
@@ -199,7 +201,7 @@ const createRestaurantHTML = (restaurant) => {
 /**
  * Add markers for current restaurants to the map.
  */
-const addMarkersToMap = (restaurants = self.restaurants) => {
+const addMarkersToMap = (restaurants) => {
   if (!self.googleMap || !restaurants) return;
 
   restaurants.forEach(restaurant => {

@@ -1,4 +1,4 @@
-/* globals  DBHelper */
+/* globals  google, DBHelper */
 
 /* Fetch restaurant info when page loaded */
 self.Router.add('restaurant', event => {
@@ -21,21 +21,23 @@ self.Router.addOnLoad('restaurant', event => {
 }); */
 
 /**
- * Initialize Google map, called from HTML.
+ * Initialize Google map
  */
-/* window.initMapForRestaurant = () => {
-  fetchRestaurantFromURL().then(restaurant => {
+window.initMapForRestaurant = (restaurants=self.restaurants) => {
+  const restaurant = restaurants[0];
+  try {
     self.googleMap = new google.maps.Map(document.getElementById('map'), {
       zoom: 16,
       center: restaurant.latlng,
       scrollwheel: false
     });
 
-    if (!self.marker) {
-      self.marker = DBHelper.mapMarkerForRestaurant(restaurant, self.googleMap);
-    }
-  }).catch(err => console.error(err));
-}; */
+    self.marker = DBHelper.mapMarkerForRestaurant(restaurant, self.googleMap);
+  } catch(err) {
+    console.error('Map init error: ' + err);
+    DBHelper.createMap(restaurant, {zoom: 16, center: {lat: restaurant.latlng.lat, lng: restaurant.latlng.lng}, initJSMapCallback: 'initMapForRestaurant'});
+  }
+};
 
 /**
  * Get current restaurant from page URL.
@@ -116,7 +118,7 @@ const fillRestaurantHTML = (restaurant) => {
 
   document.getElementById('maincontent').prepend(fragment);
 
-  DBHelper.createMap(restaurant, {zoom: 16, center: {lat: restaurant.latlng.lat, lng: restaurant.latlng.lng}});
+  DBHelper.createMap(restaurant, {zoom: 16, center: {lat: restaurant.latlng.lat, lng: restaurant.latlng.lng}, initJSMapCallback: 'initMapForRestaurant'});
 };
 
 /**

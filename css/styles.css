@@ -311,6 +311,7 @@ nav[aria-label="Breadcrumb"]{
   margin: auto;
   width: 100%;
   max-width: 800px;
+  cursor: pointer;
 }
 
 .inside #footer {

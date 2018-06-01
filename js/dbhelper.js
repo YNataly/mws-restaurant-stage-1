@@ -141,14 +141,17 @@
 
     /**
      * Create static map for restaurant(s)
+     *  @callback initJSMapCallback - global function name that will be called to initialize google map
      */
-    static createMap(restaurants, {zoom=12, center: {lat, lng}={lat: 40.722216, lng: -73.987501}}) {
+    static createMap(restaurants, {zoom=12, center: {lat, lng}={lat: 40.722216, lng: -73.987501}, initJSMapCallback='initMap'}) {
       let setCenter=true;
       if (restaurants===undefined)
         restaurants=[];
       else
       if (!Array.isArray(restaurants))
         restaurants=[restaurants];
+
+      self.restaurants=restaurants;
 
       if (restaurants.length>0) setCenter=false;
 
@@ -157,6 +160,7 @@
       const img=document.createElement('img');
       img.className='static-map-image';
       img.alt='Map with restaurants';
+      img.title='Click/tap to get interactive map';
 
       let staticMapURLparts=[`https://maps.googleapis.com/maps/api/staticmap?size=${map.clientWidth}x${map.clientHeight}&format=png8&key=AIzaSyCDUCmKmlF1HiWbi2wL30F7tu8MfBfRsD4`];
 
@@ -178,6 +182,13 @@
         console.log(err);
         map.innerHTML='Map unavailable';
       };
+
+      img.addEventListener('click', function imgClick() {
+        const script=document.createElement('script');
+        script.src=`https://maps.googleapis.com/maps/api/js?libraries=places&callback=${initJSMapCallback}&key=AIzaSyCDUCmKmlF1HiWbi2wL30F7tu8MfBfRsD4`;
+        document.head.appendChild(script);
+        img.removeEventListener('click', imgClick);
+      });
     }
 
     /**

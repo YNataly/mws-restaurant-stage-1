@@ -1,7 +1,7 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v4';
+  const cacheName = 'restaurant-rev-cache-v3';
   const imgsCache = 'restaurant-rev-imgs-v3';
   //
   const currentChaches = [cacheName, imgsCache];
