@@ -140,11 +140,53 @@
     }
 
     /**
+     * Create static map for restaurant(s)
+     */
+    static createMap(restaurants, {zoom=12, center: {lat, lng}={lat: 40.722216, lng: -73.987501}}) {
+      let setCenter=true;
+      if (restaurants===undefined)
+        restaurants=[];
+      else
+      if (!Array.isArray(restaurants))
+        restaurants=[restaurants];
+
+      if (restaurants.length>0) setCenter=false;
+
+      const map=document.getElementById('map');
+
+      const img=document.createElement('img');
+      img.className='static-map-image';
+      img.alt='Map with restaurants';
+
+      let staticMapURLparts=[`https://maps.googleapis.com/maps/api/staticmap?size=${map.clientWidth}x${map.clientHeight}&format=png8&key=AIzaSyCDUCmKmlF1HiWbi2wL30F7tu8MfBfRsD4`];
+
+      if (setCenter)
+        staticMapURLparts.push(`center=${lat},${lng}&zoom=${zoom}`);
+
+      restaurants.forEach((restaurant, ind) => {
+        const label=restaurant.label===undefined? '' : `label:${restaurant.label}|`;
+        staticMapURLparts.push(`markers=${label}${restaurant.latlng.lat},${restaurant.latlng.lng}`);
+      });
+
+      const imgURL=staticMapURLparts.join('&');
+      const encodedURL=encodeURI(imgURL);
+      const encodedURL2x=encodeURI(`${imgURL}&scale=2`);
+      img.srcset=(`${encodedURL2x} 2x, ${encodedURL}`);
+      img.src=encodedURL;
+      map.replaceChild(img, map.firstChild);
+      img.onerror=(err) => {
+        console.log(err);
+        map.innerHTML='Map unavailable';
+      };
+    }
+
+    /**
    * Map marker for a restaurant.
    */
     static mapMarkerForRestaurant(restaurant, map) {
       const marker = new google.maps.Marker({
         position: restaurant.latlng,
+        label: restaurant.label,
         title: restaurant.name,
         url: DBHelper.urlForRestaurant(restaurant),
         map: map,

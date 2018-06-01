@@ -233,6 +233,18 @@ nav[aria-label="Breadcrumb"]{
   text-align: left;
 }
 
+#restaurants-list p span {
+  display: inline-block;
+  margin-left: 0.8rem;
+  background-color: #B85C00;
+  border-radius: 100%;
+  padding: 0.3rem;
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  color: #fff;
+}
+
 #restaurants-list li a{
   background-color: #B85C00;
   border-bottom: 3px solid #eee;
@@ -284,10 +296,23 @@ nav[aria-label="Breadcrumb"]{
 }
 
 .inside #map {
-  background-color: #ccc;
+  background-color: #e8e8e8;
   height: 400px;
   width: 100%;
+  overflow: auto;
 }
+
+.inside .restaurant-info #map {
+  background-color: #f3f3f3;
+}
+
+.inside #map > .static-map-image {
+  display: block;
+  margin: auto;
+  width: 100%;
+  max-width: 800px;
+}
+
 .inside #footer {
   bottom: 0;
   position: absolute;

@@ -16,11 +16,14 @@ self.Router.add('index', function() {
   updateRestaurants();
 });
 
+/*
 self.Router.addOnLoad('index', event => {
-  const script=document.createElement('script');
+  DBHelper.createMap(self.restaurants, {zoom: 12, center: {lat: 40.722216, lng: -73.987501}});
+   const script=document.createElement('script');
   script.src='https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap';
   document.body.appendChild(script);
 });
+*/
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -119,6 +122,7 @@ const updateRestaurants = () => {
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
+      DBHelper.createMap(restaurants, {zoom: 12, center: {lat: 40.722216, lng: -73.987501}});
     }
   });
 };
@@ -135,6 +139,11 @@ const resetRestaurants = (restaurants) => {
   // Remove all map markers
   self.markers.forEach(m => m.setMap(null));
   self.markers = [];
+
+  const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const length=labels.length;
+  restaurants.forEach((restaurant, ind) => { restaurant.label=labels[ind % length]; });
+
   self.restaurants = restaurants;
 };
 
@@ -148,7 +157,6 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
     fragment.append(createRestaurantHTML(restaurant));
   });
   ul.appendChild(fragment);
-  // addMarkersToMap();
 };
 
 /**
@@ -170,7 +178,10 @@ const createRestaurantHTML = (restaurant) => {
   li.append(name);
 
   const neighborhood = document.createElement('p');
-  neighborhood.innerHTML = restaurant.neighborhood;
+  if (restaurant.label) {
+    neighborhood.innerHTML= `${restaurant.neighborhood} <span>${restaurant.label}</span>`;
+  } else
+    neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
 
   const address = document.createElement('p');

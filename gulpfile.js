@@ -25,7 +25,7 @@ const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
 // const svgo = require('gulp-svgo');
-const debug = require('gulp-debug');
+// const debug = require('gulp-debug');
 const imagemin = require('gulp-imagemin');
 // const uncss = require('gulp-uncss');
 
