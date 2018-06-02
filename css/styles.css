@@ -317,7 +317,7 @@ nav[aria-label="Breadcrumb"]{
 .inside #map > .static-map-image {
   display: block;
   margin: auto;
-  width: 100%;
+  object-fit: cover;
   max-width: 800px;
   cursor: pointer;
 }

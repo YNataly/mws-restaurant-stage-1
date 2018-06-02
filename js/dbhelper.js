@@ -143,7 +143,9 @@
      * Create static map for restaurant(s)
      *  @callback initJSMapCallback - global function name that will be called to initialize google map
      */
-    static createMap(restaurants, {zoom=12, center: {lat, lng}={lat: 40.722216, lng: -73.987501}, initJSMapCallback='initMap'}) {
+    static createMap(restaurants, {zoom=12, center: {lat, lng}={lat: 40.722216, lng: -73.987501}, initJSMapCallback='initMap', addClickHandlerTo=[]}) {
+      DBHelper.initJSMapCallback=initJSMapCallback;
+
       let setCenter=true;
       if (restaurants===undefined)
         restaurants=[];
@@ -182,14 +184,28 @@
         map.innerHTML='Map unavailable';
       };
 
-      img.addEventListener('click', function imgClick() {
-        const script=document.createElement('script');
-        script.src=`https://maps.googleapis.com/maps/api/js?libraries=places&callback=${initJSMapCallback}&key=AIzaSyCDUCmKmlF1HiWbi2wL30F7tu8MfBfRsD4`;
-        document.head.appendChild(script);
-        img.removeEventListener('click', imgClick);
-      });
+      img.addEventListener('click', DBHelper.loadJSMaps);
 
       map.replaceChild(img, map.firstChild);
+
+      const filterOptions=document.querySelector('#maincontent .filter-options');
+      if (filterOptions)
+        filterOptions.addEventListener('click', DBHelper.loadJSMaps);
+    }
+
+    static loadJSMaps(event) {
+      if (!self.googleMap) {
+        const script=document.createElement('script');
+        script.src=`https://maps.googleapis.com/maps/api/js?libraries=places&callback=${DBHelper.initJSMapCallback}&key=AIzaSyCDUCmKmlF1HiWbi2wL30F7tu8MfBfRsD4`;
+        document.head.appendChild(script);
+      }
+      let el=document.querySelector('#maincontent .filter-options');
+      if (el)
+        el.removeEventListener('click', DBHelper.loadJSMaps);
+
+      el=document.querySelector('#map > .static-map-image');
+      if (el)
+        el.removeEventListener('click', DBHelper.loadJSMaps);
     }
 
     /**
