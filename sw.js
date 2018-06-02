@@ -1,8 +1,8 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v4';
-  const imgsCache = 'restaurant-rev-imgs-v4';
+  const cacheName = 'restaurant-rev-cache-v3';
+  const imgsCache = 'restaurant-rev-imgs-v3';
 
   const currentCaches = [cacheName, imgsCache];
   //
@@ -76,14 +76,17 @@
   });
 
   function serveImg(request, requestURL) {
-    const path= requestURL.pathname || requestURL;
-    const matchPath = path.match(/^(?:(.+)-(\d+)_(?:small|medium|large)\.jpg)|(?:.+\.svg)|(?:.+\.png)$/);
-    const storageURL = matchPath[1] || matchPath[0];
-    const imgSize = +matchPath[2];
+    const matchPath = requestURL.pathname.match(/^(.+)(?:(?:-(\d+)_(?:small|medium|large)\.jpg)|(?:\.svg)|(?:\.png))$/);
+
+    if (matchPath===null)
+      return fetch(request).catch(unavailable);
+
+    const imgSize = matchPath[2]? +matchPath[2] : 0;
+    const storageURL = imgSize===0? matchPath[0] : matchPath[1];
 
     return caches.open(imgsCache).then(function (cache) {
       return cache.match(storageURL).then(function (response) {
-        return response && (isNaN(imgSize) || greaterEq(response.url, imgSize)) && response || fetch(request).then(function (nwResponse) {
+        return response && (imgSize===0 || greaterEq(response.url, imgSize)) && response || fetch(request).then(function (nwResponse) {
           if (nwResponse.ok) {
             cache.put(storageURL, nwResponse.clone());
             return nwResponse;
@@ -96,14 +99,14 @@
           return response || (storageURL === defaultRestaurantImg? new Response('Unavailable', {
             'status': 503,
             'statusText': 'Service Unavailable'
-          }) : serveImg(defaultRestaurantImg, defaultRestaurantImg));
+          }) : cache.match(defaultRestaurantImg).catch(unavailable));
         });
       });
     });
   }
 
   function greaterEq(responseUrl, imgSize) {
-    return Number(responseUrl.match(/-(\d+)_(?:small|medium|large)\.jpg$/)[1]) >= imgSize;
+    return Number(responseUrl.match(/^.+-(\d+)_(?:small|medium|large)\.jpg$/)[1]) >= imgSize;
   }
 
   function unavailable(err) {

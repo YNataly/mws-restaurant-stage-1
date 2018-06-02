@@ -281,6 +281,10 @@ nav[aria-label="Breadcrumb"]{
   width: 100%;
 }
 
+.inside .restaurant-info #map-container {
+  background-color: #f3f3f3;
+}
+
 .inside #map-container:last-child{
   padding-bottom: 4.6rem;
 }
@@ -304,6 +308,10 @@ nav[aria-label="Breadcrumb"]{
 
 .inside .restaurant-info #map {
   background-color: #f3f3f3;
+}
+
+.inside .restaurant-info #map-container:first-child {
+  padding-top: 10px;
 }
 
 .inside #map > .static-map-image {

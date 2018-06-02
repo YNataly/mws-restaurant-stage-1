@@ -147,8 +147,7 @@
       let setCenter=true;
       if (restaurants===undefined)
         restaurants=[];
-      else
-      if (!Array.isArray(restaurants))
+      else if (!Array.isArray(restaurants))
         restaurants=[restaurants];
 
       self.restaurants=restaurants;
@@ -177,7 +176,7 @@
       const encodedURL2x=encodeURI(`${imgURL}&scale=2`);
       img.srcset=(`${encodedURL2x} 2x, ${encodedURL}`);
       img.src=encodedURL;
-      map.replaceChild(img, map.firstChild);
+
       img.onerror=(err) => {
         console.log(err);
         map.innerHTML='Map unavailable';
@@ -189,6 +188,8 @@
         document.head.appendChild(script);
         img.removeEventListener('click', imgClick);
       });
+
+      map.replaceChild(img, map.firstChild);
     }
 
     /**
