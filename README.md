@@ -31,7 +31,7 @@ Follow instructions in [__Local Development API Server__](https://github.com/uda
 
         ```npm install```
    - - -
-   ### 3. Build project assets
+   ### 3. Build project assets and run local server
 
    - To create a development version (without minification) run:
 
@@ -61,7 +61,9 @@ Both commands run local Browsersync server at [localhost:3000](localhost:3000)
 - When development version is created (using `gulp` command), script uses cache file cache.images.json . If image(s) doesn't copied to target __build__ directory, remove cache by run:
 
     `gulp clean-cache`
-- When development version is created (using `gulp` command), existing __./build/img__ directory preserved. If you want clean it during project build (e.g. if you removed some images from __./img-src__ directory), run:
+
+    (Then run `gulp` command again.)
+- When development version is created (using `gulp` command), existing __./build/img__ directory is preserved. If you want clean it during project build (e.g. if you removed some images from __./img-src__ directory), run:
 
    `gulp clean-dev`
 
