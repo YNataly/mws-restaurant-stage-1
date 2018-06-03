@@ -58,6 +58,7 @@ Both commands run local Browsersync server at [localhost:3000](http://localhost:
        ```npm run serve```
 - - -
 ## Troubleshooting
+- All commands should be run from project root directory.
 - When development version is created (using `gulp` command), script uses cache file cache.images.json . If image(s) doesn't copied to target __build__ directory, remove cache by run:
 
     `gulp clean-cache`
