@@ -4,7 +4,7 @@ Progressive mobile-ready web application with offline experience for restaurant 
 
 ## Project dependency
 
-Project gets restaurants data from [__Local Development API Server__](https://github.com/udacity/mws-restaurant-stage-2) running at [localhost:1337](localhost:1337)
+Project gets restaurants data from [__Local Development API Server__](https://github.com/udacity/mws-restaurant-stage-2) running at [localhost:1337](http://localhost:1337)
 
 Follow instructions in [__Local Development API Server__](https://github.com/udacity/mws-restaurant-stage-2) github repository, to install and run this server locally.
 
@@ -45,15 +45,15 @@ Follow instructions in [__Local Development API Server__](https://github.com/uda
 
        It will create a __dist__ directory.
 
-Both commands run local Browsersync server at [localhost:3000](localhost:3000)
+Both commands run local Browsersync server at [localhost:3000](http://localhost:3000)
    - - -
 ## Run project from local machine
 
-   - If you have assets in __build__ directory, you can run local server at [localhost:3000](localhost:3000) to serve them with command:
+   - If you have assets in __build__ directory, you can run local server at [localhost:3000](http://localhost:3000) to serve them with command:
 
        ```npm run serve-dev```
 
-    - If you have assets in __prod__ directory, you can run local server at [localhost:3000](localhost:3000) to serve them with command:
+    - If you have assets in __prod__ directory, you can run local server at [localhost:3000](http://localhost:3000) to serve them with command:
 
        ```npm run serve```
 - - -
