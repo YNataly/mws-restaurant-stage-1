@@ -1,28 +1,74 @@
-# Mobile Web Specialist Certification Course
----
-#### _Three Stage Course Material Project - Restaurant Reviews_
+# Restaurant Reviews
+Progressive mobile-ready web application with offline experience for restaurant reviews.
+- - -
 
-## Project Overview: Stage 1
+## Project dependency
 
-For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
+Project gets restaurants data from [__Local Development API Server__](https://github.com/udacity/mws-restaurant-stage-2) running at [localhost:1337](localhost:1337)
 
-### Specification
+Follow instructions in [__Local Development API Server__](https://github.com/udacity/mws-restaurant-stage-2) github repository, to install and run this server locally.
 
-You have been provided the code for a restaurant reviews website. The code has a lot of issues. It’s barely usable on a desktop browser, much less a mobile device. It also doesn’t include any standard accessibility features, and it doesn’t work offline at all. Your job is to update the code to resolve these issues while still maintaining the included functionality. 
+- - -
 
-### What do I do from here?
+##  Install project
 
-1. In this folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer. 
+   ### 1. Clone or download project
+   ```git clone https://github.com/YNataly/mws-restaurant-stage-1.git```
 
-In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 8000` (or some other port, if port 8000 is already in use.) For Python 3.x, you can use `python3 -m http.server 8000`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
+   - - -
 
-2. With your server running, visit the site: `http://localhost:8000`, and look around for a bit to see what the current experience looks like.
-3. Explore the provided code, and make start making a plan to implement the required features in three areas: responsive design, accessibility and offline use.
-4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
+   ### 2. Install dependencies
 
-### Note about ES6
+   1. Project requires:
+        - [node Version v6.11.1](https://nodejs.org/en/) and [npm]        (https://www.npmjs.com/get-npm) installed
+        - [gulp-cli](https://gulpjs.org/getting-started) installed globally
 
-Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
+          >  If you have previously installed a version of gulp globally, please         run npm rm --global gulp to make sure your old version doesn't collide         with gulp-cli.
+
+          ```npm install --global gulp-cli```
+
+   2. Navigate to project root directory and run
+
+        ```npm install```
+   - - -
+   ### 3. Build project assets
+
+   - To create a development version (without minification) run:
+
+       ```gulp```
+
+       It will create a __build__ directory.
+
+   - To create a production version (with minified js and css) run:
+
+       ```gulp prod```
+
+       It will create a __dist__ directory.
+
+Both commands run local Browsersync server at [localhost:3000](localhost:3000)
+   - - -
+## Run project from local machine
+
+   - If you have assets in __build__ directory, you can run local server at [localhost:3000](localhost:3000) to serve them with command:
+
+       ```npm run serve-dev```
+
+    - If you have assets in __prod__ directory, you can run local server at [localhost:3000](localhost:3000) to serve them with command:
+
+       ```npm run serve```
+- - -
+## Troubleshooting
+- When development version is created (using `gulp` command), script uses cache file cache.images.json . If image(s) doesn't copied to target __build__ directory, remove cache by run:
+
+    `gulp clean-cache`
+- When development version is created (using `gulp` command), existing __./build/img__ directory preserved. If you want clean it during project build (e.g. if you removed some images from __./img-src__ directory), run:
+
+   `gulp clean-dev`
+
+   ( instead of `gulp` )
+
+
+
 
 
 

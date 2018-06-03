@@ -24,10 +24,8 @@ const cleanCSS = require('gulp-clean-css');
 const responsive = require('gulp-responsive');
 const fs = require('fs');
 const replace = require('gulp-replace-with-sourcemaps');
-// const svgo = require('gulp-svgo');
 // const debug = require('gulp-debug');
 const imagemin = require('gulp-imagemin');
-// const uncss = require('gulp-uncss');
 
 const config={};
 config.allJS = 'all.js';
@@ -70,7 +68,7 @@ gulp.task('watch', ['create-assets'], function () {
   gulp.watch('./img-src/*.{png,svg}', ['svg_png']);
   gulp.watch(['./js/**/*.js'], ['scripts']);
   gulp.watch(['./sw.js'], ['sw-script']);
-  gulp.watch('./build/**/*', browserSync.reload);
+  gulp.watch([`${config.baseDir}/**/*`], browserSync.reload);
 });
 
 gulp.task('copy-manifest', function () {
@@ -146,7 +144,7 @@ gulp.task('clean-dist', function() {
   return del('./dist');
 });
 
-gulp.task('initBrowserSync', function() {
+/* gulp.task('initBrowserSync', function() {
   browserSync.init({
     server: { baseDir: `${config.baseDir}` },
     port: 3000,
@@ -154,13 +152,15 @@ gulp.task('initBrowserSync', function() {
   }, function(err, bs) {
     console.log(bs.options.get('urls').toJS());
   });
-});
+}); */
 
 gulp.task('prod', ['clean-dist'], function(cb) {
   config.isProduction=true;
   config.baseDir='./dist';
 
-  runSequence('create-assets', 'initBrowserSync', cb);
+  runSequence('watch', cb);
+
+  // runSequence('create-assets', 'initBrowserSync', cb);
 });
 
 gulp.task('svg_png', function() {

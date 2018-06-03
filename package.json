@@ -2,7 +2,8 @@
   "name": "reponsive-images",
   "version": "0.1.0",
   "scripts": {
-    "serve": "browser-sync start -s -f . --no-notify -b chrome.exe --port 3000"
+    "serve": "browser-sync start --cwd ./prod -s -f . --no-notify -b chrome.exe --port 3000",
+    "serve-dev": "browser-sync start --cwd ./build -s -f . --no-notify -b chrome.exe --port 3000"
   },
   "babel": {
     "presets": [
@@ -40,7 +41,6 @@
     "gulp-responsive": "^2.10.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
-    "gulp-uncss": "^1.0.6",
     "run-sequence": "^2.2.1"
   },
   "dependencies": {}
