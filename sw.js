@@ -111,6 +111,6 @@
 
   function unavailable(err) {
     console.log(err);
-    return new Response('Unavailable', {'status': 503});
+    return new Response('Unavailable', {'status': 503, 'statusText': 'Service Unavailable'});
   }
 })();
