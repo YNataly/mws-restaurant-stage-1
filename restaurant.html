@@ -37,6 +37,22 @@
 
   <!-- Beginning main -->
   <main id="maincontent" class="restaurant-info">
+      <form  id="review-form" name="user-review">
+          <h3>Write Your Review</h3>
+          <label for="user-name">Name<abbr title="This field is mandatory">*</abbr></label>
+          <input id="user-name" type="text" name="user-name" placeholder="Your name" autocomplete="name" required>
+          <div id="rating-radiogroup" class="rating" role="radiogroup" aria-labelledby="rating-label">
+              <div for="rating5" id="rating-label">Rating<abbr title="This field is mandatory">*</abbr></div>
+              <input type="radio" name="rating" id="rating5" checked value="5" required tabindex="-1"><label  for="rating5" tabindex="0" title="Excelent"></label>
+              <input type="radio" name="rating" id="rating4" value="4" required tabindex="-1"><label for="rating4" tabindex="0" title="Pretty good"></label>
+              <input type="radio" name="rating" id="rating3" value="3" required tabindex="-1"><label for="rating3" tabindex="0" title="So-so"></label>
+              <input type="radio" name="rating" id="rating2" value="2" required tabindex="-1"><label for="rating2" tabindex="0" title="Bad"></label>
+              <input type="radio" name="rating" id="rating1" value="1" required tabindex="-1"><label for="rating1" tabindex="0" title="The Worst"></label>
+          </div>
+          <label for="comments">Your comments</label>
+          <textarea id="comments" name="comments" placeholder="Type your review here ..."></textarea>
+          <div class="submit-field"><input class="submit-button" type="submit" value="Send Review" /></div>
+        </form>
     <!-- Beginning map -->
     <section id="map-container">
         <div id="map" role="application"  aria-label="Map with restaurant">Map unavailable</div>

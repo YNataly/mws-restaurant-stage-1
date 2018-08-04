@@ -438,7 +438,7 @@ nav[aria-label="Breadcrumb"]{
 }
 
 #reviews-list .rating {
-  background-color: #B85C00;
+  background-color: #B80000;
   color: #fff;
   font-size: 1.1rem;
   text-transform: uppercase;
@@ -456,6 +456,109 @@ nav[aria-label="Breadcrumb"]{
 #restaurant-hours td {
   color: #505050;
 }
+
+#review-form {
+  order: 10;
+  border-bottom: 1px solid #d9d9d9;
+  border-top: 1px solid #fff;
+  padding: 10px 2px 30px;
+  font-size: 1.2rem;
+}
+
+#review-form > h3 {
+  color: #2071b6;
+  margin-bottom: 10px;
+  padding: 0 0 1pt 10px;
+}
+
+#review-form abbr[title] {
+  text-decoration: none;
+  color: #175681;
+}
+
+#review-form > label, #review-form > div {
+  display: block;
+  padding: 0 0 10px 0;
+}
+
+#rating-label {
+  font-size: 1.2rem;
+  padding: 10px 0;
+
+}
+
+#review-form > input {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  padding: 10px 0 5px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #AAA;
+}
+
+#review-form > .rating {
+  overflow: hidden;
+  font-size: 2rem;
+  display: inline-block;
+}
+
+#review-form > .rating > input {
+  position: absolute;
+  left: -9999px;
+}
+
+#review-form > .rating > label {
+  width: 2.5rem;
+  padding: 3px 6px;
+  float: right;
+}
+
+#review-form > .rating >  label:before {
+  content: "☆";
+  font-size: 2rem;
+  z-index: 12;
+}
+
+#review-form > .rating > label:hover:before,
+#review-form > .rating > label:focus:before,
+#review-form > .rating > label:hover ~ label:before,
+#review-form > .rating > label:focus ~ label:before,
+#review-form > .rating  > input:checked ~ label:before {
+  content: "★";
+  font-size: 2rem;
+  color: #b44b27;
+}
+
+#review-form > .rating > label:active {
+  position: relative;
+  left: 2px;
+  top: 2px;
+}
+
+#review-form #comments {
+  width: 100%;
+  min-height: 10rem;
+}
+
+#review-form .submit-field {
+  text-align: center;
+}
+
+#review-form .submit-button {
+  display: inline-block;
+  margin: auto;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #2071b6;
+  color: #fff;
+  font-weight: 700;
+  border-bottom: 1px solid #AAA;
+  width: auto;
+}
+
+
 
 /* Responsive */
 

@@ -90,7 +90,10 @@ gulp.task('copy-html', function () {
 gulp.task('styles', function () {
   return gulp.src(['./css/normalize.css', './css/*.css'])
     .pipe(sourcemaps.init())
-    .pipe(postcss([autoprefixer()]))
+    .pipe(postcss([autoprefixer()])
+      .on('error', (err) =>
+        console.log(err.message)
+      ))
     .pipe(concat(config.allCSS))
     .pipe(gulpIf(config.isProduction, cleanCSS()))
     .pipe(sourcemaps.write('.'))

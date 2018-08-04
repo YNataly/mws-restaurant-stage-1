@@ -9,12 +9,21 @@
 
   class DBHelper { // eslint-disable-line no-unused-vars
   /**
+   * Database restaurants URL.
+   * Change this to restaurants URL on your server.
+   */
+    static get DATABASE_URL_Restaurants() {
+      const port = 1337; // Change this to your server port
+      return `http://localhost:${port}/restaurants`;
+    }
+
+    /**
    * Database URL.
-   * Change this to restaurants.json file location on your server.
+   * Change this to restaurants URL on your server.
    */
     static get DATABASE_URL() {
       const port = 1337; // Change this to your server port
-      return `http://localhost:${port}/restaurants`;
+      return `http://localhost:${port}`;
     }
 
     /**
@@ -224,7 +233,7 @@
     }
   }
 
-  DBHelper.dbURL=new URL(DBHelper.DATABASE_URL);
+  DBHelper.dbURL=new URL(DBHelper.DATABASE_URL_Restaurants);
 
   /**
    * Fetch all restaurants.
@@ -239,7 +248,7 @@
         result=db.getAllRestaurants().then(restaurants => {
           if (restaurants && restaurants.length>0) {
             return restaurants;
-          } else return fetch(DBHelper.DATABASE_URL).then(resp => {
+          } else return fetch(DBHelper.DATABASE_URL_Restaurants).then(resp => {
             if (resp.status === 200) { // Got a success response from server!
               return resp.json().then(restaurants => {
                 db.addRestaurants(restaurants);
@@ -261,7 +270,7 @@
   })();
 
   /**
-   * Fetch a restaurant by its ID.
+   * Fetch a restaurant info by its ID.
    */
   DBHelper.fetchRestaurantById = (function() {
     let result;
@@ -271,7 +280,7 @@
       if (isRejected) {
         isRejected=false;
         result=db.getRestaurantInfo(id).then(restaurant => {
-          return restaurant || fetch(DBHelper.DATABASE_URL+`/${id}`).then(resp => {
+          return restaurant || fetch(DBHelper.DATABASE_URL_Restaurants+`/${id}`).then(resp => {
             if (resp.status === 200) { // Got a success response from server!
               return resp.json().then(restaurant => {
                 db.addRestaurantInfo(restaurant);
@@ -289,6 +298,64 @@
         });
       }
       return result;
+    };
+  })();
+
+  /**
+   * Fetch a restaurant reviews by restaurant ID.
+   */
+  DBHelper.fetchRestaurantReviews = (function() {
+    let result;
+    let isRejected=true;
+
+    return function(id) {
+      if (isRejected) {
+        isRejected=false;
+        result=db.getRestaurantReviews(id).then(reviews => {
+          return reviews || fetch(DBHelper.DATABASE_URL+`/reviews/?restaurant_id=${id}`).then(resp => {
+            if (resp.status === 200) { // Got a success response from server!
+              return resp.json().then(reviews => {
+                db.addRestaurantReviews(reviews);
+                return reviews;
+              });
+            } else { // Got an error from server!
+              const error = `Request failed. Returned status of ${resp.status}`;
+              throw new Error(error);
+            }
+          });
+        }).catch(err => {
+          isRejected=true;
+          console.log(err);
+          throw err;
+        });
+      }
+      return result;
+    };
+  })();
+
+  /**
+   * Add restaurant review
+   */
+  DBHelper.addhRestaurantReview = (function() {
+    // let result;
+
+    return function(review) {
+      db.addRestaurantReview(review).then(() => {
+        return fetch(DBHelper.DATABASE_URL+`/reviews/`,
+          { method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(review)});
+      }).then(resp => {
+        if (resp.status === 200) {
+          return resp.json().then(rev => { console.log(rev); });
+        } else { // Got an error from server!
+          const error = `Request failed. Returned status of ${resp.status}`;
+          throw new Error(error);
+        }
+      }).catch(err => {
+        console.log(err);
+        throw err;
+      });
     };
   })();
 

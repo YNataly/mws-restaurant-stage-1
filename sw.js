@@ -1,11 +1,11 @@
 /* eslint-env serviceworker */
 
 (function() {
-  const cacheName = 'restaurant-rev-cache-v6';
+  const cacheName = 'restaurant-rev-cache-v4';
   const imgsCache = 'restaurant-rev-imgs-v6';
-  //
-  const currentCaches = [cacheName, imgsCache];
 
+  const currentCaches = [cacheName, imgsCache];
+  //
   const defaultRestaurantImg='img/restaurant.svg';
   const icons=['img/restaurants-icon-48.png', 'img/restaurants-icon-192.png', 'img/restaurants-icon-512.png'];
 

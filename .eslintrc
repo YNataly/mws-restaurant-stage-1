@@ -17,6 +17,7 @@
         "space-infix-ops": 0,
         "handle-callback-err": 0,
         "no-mixed-operators": 0,
-        "camelcase": 0
+        "camelcase": 0,
+        "no-fallthrough": "off"
     }
 }
