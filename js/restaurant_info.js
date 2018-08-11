@@ -175,6 +175,7 @@ self.Router.addOnLoad('restaurant', event => {
  * add review id to not-send ObjectStore until it was successfully send to server
 */
   const submitReview=function(event) {
+    event.preventDefault();
     console.log('form submision');
     let review={};
     const form=document.forms['user-review'];
@@ -183,7 +184,18 @@ self.Router.addOnLoad('restaurant', event => {
     review.comments=form.elements['comments'].value;
     review.restaurant_id=restaurantId;
 
-    DBHelper.addhRestaurantReview(review);
+    // Clear form
+    form.reset();
+
+    DBHelper.addRestaurantReview(review).then(res => addToReviews(res));
+  };
+
+  /**
+   * add written review to Page
+   */
+  const addToReviews = function(wreview) {
+    const reviewsList=document.getElementById('reviews-list');
+    reviewsList.appendChild(createReviewHTML(wreview.review));
   };
 
   /**
@@ -234,7 +246,7 @@ self.Router.addOnLoad('restaurant', event => {
     header.appendChild(name);
 
     const date = document.createElement('p');
-    date.innerHTML = review.date;
+    date.innerHTML = review.updatedAt? new Date(review.updatedAt).toLocaleString() : 'Not sended';
     date.className='date';
     header.appendChild(date);
 

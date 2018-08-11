@@ -19,7 +19,7 @@ class DBController { // eslint-disable-line no-unused-vars
 
     const dbController=this;
 
-    dbController.dbPromise = idb.open(dbController.db_name, 4, function(upgradeDB) {
+    dbController.dbPromise = idb.open(dbController.db_name, 1, function(upgradeDB) {
       try {
         switch (upgradeDB.oldVersion) {
           case 0: if (!upgradeDB.objectStoreNames.contains(dbController.restaurantsStore))
@@ -28,16 +28,13 @@ class DBController { // eslint-disable-line no-unused-vars
             if (!upgradeDB.objectStoreNames.contains(dbController.restaurantInfo))
               upgradeDB.createObjectStore(dbController.restaurantInfo, {keyPath: 'id'});
 
-          case 1: if (!upgradeDB.objectStoreNames.contains(dbController.restaurantReviews)) {
-            upgradeDB.createObjectStore(dbController.restaurantReviews, {keyPath: 'id'});
-          }
+            if (!upgradeDB.objectStoreNames.contains(dbController.restaurantReviews)) {
+              const store=upgradeDB.createObjectStore(dbController.restaurantReviews, {keyPath: 'id'});
+              store.createIndex(dbController.reviewsByRestaurantIdIndex, 'restaurant_id', {unique: false});
+            }
 
-          case 2: if (!upgradeDB.objectStoreNames.contains(dbController.notSendedReviews))
-            upgradeDB.createObjectStore(dbController.notSendedReviews);
-
-          case 3: if (!upgradeDB.objectStoreNames.contains(dbController.reviewsByRestaurantIdIndex)) {
-            upgradeDB.createIndex(dbController.reviewsByRestaurantIdIndex, 'restaurant_id', {unique: false});
-          }
+            if (!upgradeDB.objectStoreNames.contains(dbController.notSendedReviews))
+              upgradeDB.createObjectStore(dbController.notSendedReviews, {autoIncrement: true});
         }
       } catch(err) {
         console.log(`Error in Update db: ${err}`);
@@ -111,17 +108,33 @@ class DBController { // eslint-disable-line no-unused-vars
       .catch(err => console.error(`Error during adding restautrant ${data.id} reviews to db. ${err}`));
   }
 
+  // returns id of added restaurant
   addRestaurantReview(review) {
     const dbController=this;
 
     return dbController.openDB().then(db => {
       const tx=db.transaction(dbController.notSendedReviews, 'readwrite');
       const store=tx.objectStore(dbController.notSendedReviews);
-      store.put(review);
-      return tx.complete;
+      return store.add(review).then(res => {
+        return res;
+      });
+      // return tx.complete;
     })
       // .then(() => console.log(`restaurant ${data.id} info added/updated`))
       .catch(err => console.error(`Error during adding restautrant ${review.restaurant_id} review to db. ${err}`));
+  }
+
+  removeFromNotSended(id) {
+    const dbController=this;
+
+    return dbController.openDB().then(db => {
+      const tx=db.transaction(dbController.notSendedReviews, 'readwrite');
+      const store=tx.objectStore(dbController.notSendedReviews);
+      store.delete(id);
+      return tx.complete;
+    })
+      // .then(() => console.log(`restaurant ${data.id} info added/updated`))
+      .catch(err => console.error(`Error during deleting restautrant ${id} review from not sended. ${err}`));
   }
 
   /* addRestaurantInfoFromResponse(response, restId) {

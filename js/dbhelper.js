@@ -312,7 +312,8 @@
       if (isRejected) {
         isRejected=false;
         result=db.getRestaurantReviews(id).then(reviews => {
-          return reviews || fetch(DBHelper.DATABASE_URL+`/reviews/?restaurant_id=${id}`).then(resp => {
+          if (reviews.length > 0) return reviews;
+          return fetch(DBHelper.DATABASE_URL+`/reviews/?restaurant_id=${id}`).then(resp => {
             if (resp.status === 200) { // Got a success response from server!
               return resp.json().then(reviews => {
                 db.addRestaurantReviews(reviews);
@@ -336,26 +337,38 @@
   /**
    * Add restaurant review
    */
-  DBHelper.addhRestaurantReview = (function() {
+  DBHelper.addRestaurantReview = (function() {
     // let result;
 
     return function(review) {
-      db.addRestaurantReview(review).then(() => {
+      return db.addRestaurantReview(review).then(id => {
         return fetch(DBHelper.DATABASE_URL+`/reviews/`,
           { method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(review)});
-      }).then(resp => {
-        if (resp.status === 200) {
-          return resp.json().then(rev => { console.log(rev); });
-        } else { // Got an error from server!
-          const error = `Request failed. Returned status of ${resp.status}`;
-          throw new Error(error);
-        }
-      }).catch(err => {
-        console.log(err);
-        throw err;
-      });
+            body: JSON.stringify(review)})
+          .then(resp => {
+            console.log(resp);
+            if (resp.status === 201 || resp.status === 200) {
+              return resp.json().then(rev => {
+                console.log(rev);
+                // remove review from not sended and add to reviews rev from response
+                db.removeFromNotSended(id);
+                return db.addRestaurantReviews([rev]).then(() => { return {review: rev, status: 'sended'}; });
+              });
+            } else { // Got an error from server!
+              const error = `Request failed. Returned status of ${resp.status}`;
+              console.log(error);
+              return {review, status: 'not-sended'};
+            }
+          }, err => {
+            console.log(err);
+            return {review, status: 'not-sended'};
+          });
+      })
+        .catch(err => {
+          console.log(err);
+          throw err;
+        });
     };
   })();
 
